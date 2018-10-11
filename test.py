@@ -15,7 +15,7 @@ params = {'dim': (25, 150, 150),
           'shuffle': True}
 
 # Datasets
-directory = ROOT_DIRECTORY + "test/"
+directory = "test_data/"
 data, labels = pp.get_data_and_labels(directory)
 
 print(labels)
