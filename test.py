@@ -4,12 +4,12 @@ import preprocessing as pp
 
 
 NO_OF_LABELS = 2
-ROOT_DIRECTORY = "/Users/manuel/Dropbox/_data/"
+ROOT_DIRECTORY = "data/"
 
 
 # Parameters
-params = {'dim': (5, 224, 224),
-          'batch_size': 10,
+params = {'dim': (25, 150, 150),
+          'batch_size': 5,
           'n_classes': 2,
           'n_channels': 3,
           'shuffle': True}

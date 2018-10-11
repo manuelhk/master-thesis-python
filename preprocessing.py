@@ -4,8 +4,8 @@ import glob
 import random
 
 
-IMAGE_SHAPE = (224, 224)
-ROOT_DIRECTORY = "/Users/manuel/Dropbox/_data/"
+IMAGE_SHAPE = (150, 150)
+ROOT_DIRECTORY = "data/"
 
 
 def load_video(video_path):
@@ -74,5 +74,5 @@ def split_into_training_and_validation(list_of_paths, share_training_data=0.8):
     return data_dict
 
 
-# dir = ROOT_DIRECTORY + "videos/"
+dir = ROOT_DIRECTORY + "test/"
 # video_paths = glob.glob(dir + "*")

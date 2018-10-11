@@ -3,7 +3,7 @@ from my_generator import DataGenerator
 import preprocessing as pp
 
 NO_OF_LABELS = 2
-ROOT_DIRECTORY = "/Users/manuel/Dropbox/_data/"
+ROOT_DIRECTORY = "data/"
 
 # Parameters
 params = {'dim': (224, 224),
