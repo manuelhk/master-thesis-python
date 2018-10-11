@@ -1,4 +1,5 @@
 import keras
+import preprocessing
 import numpy as np
 
 
@@ -59,3 +60,14 @@ class DataGenerator(keras.utils.Sequence):
             labels[i] = self.labels[ID]
         return data, keras.utils.to_categorical(labels, num_classes=self.n_classes)
 
+
+def build_data_generators(directory):
+    params = {'dim': (25, 150, 150),
+              'batch_size': 5,
+              'n_classes': 2,
+              'n_channels': 3,
+              'shuffle': True}
+    data, labels = preprocessing.get_data_and_labels(directory)
+    train_generator = DataGenerator(data['train'], labels, **params)
+    validation_generator = DataGenerator(data['validation'], labels, **params)
+    return train_generator, validation_generator
