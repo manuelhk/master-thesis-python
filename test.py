@@ -15,7 +15,7 @@ params = {'dim': (5, 224, 224),
           'shuffle': True}
 
 # Datasets
-directory = ROOT_DIRECTORY + "videos/"
+directory = ROOT_DIRECTORY + "test/"
 data, labels = pp.get_data_and_labels(directory)
 
 print(labels)
@@ -43,7 +43,8 @@ predictions = keras.layers.Dense(NO_OF_LABELS, activation='softmax', name='predi
 
 # build final model
 model = keras.Model(inputs=video, outputs=predictions)
-model.compile(optimizer=keras.optimizers.Adam(3e-4), loss=keras.losses.categorical_crossentropy)
+# model.compile(optimizer=keras.optimizers.Adam(3e-4), loss=keras.losses.categorical_crossentropy)
+model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 
 print(model.summary())
 
