@@ -2,6 +2,9 @@ import keras
 from my_generator import DataGenerator
 import preprocessing as pp
 
+NO_OF_LABELS = 2
+ROOT_DIRECTORY = "/Users/manuel/Dropbox/_data/"
+
 # Parameters
 params = {'dim': (224, 224),
           'batch_size': 10,
@@ -10,7 +13,7 @@ params = {'dim': (224, 224),
           'shuffle': True}
 
 # Datasets
-directory = "nn/data/"
+directory = ROOT_DIRECTORY + "nn/data/"
 data, labels = pp.get_data_and_labels(directory)
 
 print(labels)
@@ -53,7 +56,6 @@ print(model_final.summary())
 
 
 # Train model on dataset
-model_final.fit_generator(generator=train_generator, validation_data=validation_generator,
-                          epochs=5)
+model_final.fit_generator(generator=train_generator, validation_data=validation_generator, epochs=5)
 
 

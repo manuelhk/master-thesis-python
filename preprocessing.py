@@ -5,49 +5,42 @@ import random
 
 
 IMAGE_SHAPE = (224, 224)
-INPUT_DIRECTORY = "nn/data"
-OUTPUT_DIRECTORY = "nn/data"
-
-
-def create_npy_from_videos(videos_directory):
-    videos = glob.glob(videos_directory + "/*")
-    videos.sort()
-    list = []
-    for video_path in videos:
-        list.append(load_video(video_path))
-    videos_np = np.array(list)
-    return videos_np
-
-
-def create_npy_from_images(images_directory):
-    images = glob.glob(images_directory + "/*")
-    images.sort()
-    list = []
-    for image_path in images:
-        list.append(load_image(image_path))
-    images_np = np.array(list)
-    return images_np
+ROOT_DIRECTORY = "/Users/manuel/Dropbox/_data/"
 
 
 def load_video(video_path):
+    """ Loads images in defined folder (from one video) and returns numpy of video """
     images = glob.glob(video_path + "/*.jpg")
     images.sort()
     list = []
     for image_path in images:
         image = load_image(image_path)
+        image = cv2.resize(image, IMAGE_SHAPE)
         list.append(image)
     video_np = np.array(list)
     return video_np
 
 
 def load_image(image_path):
+    """ Loads image and returns numpy of image"""
     image = cv2.imread(image_path)
     image = cv2.resize(image, IMAGE_SHAPE)
     image_np = np.array(image)
     return image_np
 
 
-def jpg_to_npy(directory):
+def videos_to_npy(directory):
+    """ Accesses every video folder in directory and saves a .npy file respectively"""
+    videos = glob.glob(directory + "*")
+    i = 0
+    for path in videos:
+        np.save(directory + str(i) + ".npy", load_video(path))
+        i += 1
+    pass
+
+
+def images_to_npy(directory):
+    """ Accesses every image in directory and creates and saves a .npy file respectively """
     images = glob.glob(directory + "*.jpg")
     images.sort()
     i = 0
@@ -58,11 +51,12 @@ def jpg_to_npy(directory):
 
 
 def get_data_and_labels(directory):
+    """ Accesses directory and creates two dictionaries with filenames .npy. One for labels and the other for data. """
     paths = glob.glob(directory + "*/*.npy")
-    paths.sort()
+    # paths.sort()
     labels_dict = dict()
     for path in paths:  # todo create method to label data correctly
-        if "left" in path:
+        if "label0" in path:
             labels_dict.update({path: 0})
         else:
             labels_dict.update({path: 1})
@@ -72,6 +66,7 @@ def get_data_and_labels(directory):
 
 
 def split_into_training_and_validation(list_of_paths, share_training_data=0.8):
+    """ Splits data into training data and validation data and returns a dictionary with two lists """
     random.shuffle(list_of_paths)
     train_list = list_of_paths[:np.math.floor(len(list_of_paths)*share_training_data)]
     eval_list = list_of_paths[np.math.floor(len(list_of_paths)*share_training_data):]
@@ -79,12 +74,5 @@ def split_into_training_and_validation(list_of_paths, share_training_data=0.8):
     return data_dict
 
 
-directory = "nn/data/"
-# jpg_to_npy(directory)
-
-d, l = get_data_and_labels(directory)
-t = d["train"]
-for el in t:
-    label = l[el]
-    print(el + ": " + str(label))
-
+# dir = ROOT_DIRECTORY + "videos/"
+# video_paths = glob.glob(dir + "*")
