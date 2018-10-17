@@ -1,5 +1,5 @@
 import numpy as np
-import pandas as pd
+# import pandas as pd
 import cv2
 import os
 
@@ -128,10 +128,10 @@ def smoothing_fn(scenes):
     return scenarios
 
 
-def save_data(data_array, file_name):
-    df = pd.DataFrame(data_array)
-    df.to_csv(file_name)
-    pass
+# def save_data(data_array, file_name):
+#     df = pd.DataFrame(data_array)
+#     df.to_csv(file_name)
+#     pass
 
 
 def save_video(frames_folder_path, video_path, scenes_labeled, scenarios_labeled):
