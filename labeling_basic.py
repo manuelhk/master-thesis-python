@@ -1,14 +1,15 @@
 import numpy as np
 import glob
+import cv2
 import my_vehicle
 
 
 DATA_HZ = 50
 FPS = 5
 MIN_CONSECUTIVE_SCENES = 15    # minimum number of required consecutive scenes to be a scenario
-SCENARIOS = {"FREE_CRUISING": 0, "APPROACHING": 1, "FOLLOWING": 2,
-             "CATCHING_UP": 3, "OVERTAKING": 4, "LANE_CHANGE_LEFT": 5, "LANE_CHANGE_RIGHT": 6,
-             "V2_CATCHING_UP": 7, "V2_OVERTAKING": 8, "UNKNOWN": 9}
+SCENARIOS = ["FREE_CRUISING", "APPROACHING", "FOLLOWING",
+             "CATCHING_UP", "OVERTAKING", "LANE_CHANGE_LEFT", "LANE_CHANGE_RIGHT",
+             "V2_CATCHING_UP", "V2_OVERTAKING", "UNKNOWN"]
 
 
 def get_data(data_path, frames_path):
@@ -55,8 +56,7 @@ def label_scenarios(data, metadata, all_vehicles, images):
     for j, image_path in enumerate(images):
         scenarios_labels[j, 9] = unknown_fn(scenarios_labels[j, :])
         label_dict.update({image_path: scenarios_labels[j, :]})
-        print(label_dict[image_path])
-    return label_dict, scenes_labels, scenarios_labels
+    return label_dict, SCENARIOS
 
 
 def get_ego_vehicle(data, metadata, index):
@@ -193,7 +193,27 @@ def smoothing_fn(scenes):
             if scenes[j, i] == 0:
                 if j - flag >= MIN_CONSECUTIVE_SCENES:
                     for k in range(flag, j):
-                        print(k)
                         scenarios[k, i] = 1
                 flag = j+1
     return scenarios
+
+
+def save_video(label_dict, video_path):
+    print("Saving video...")
+    out = cv2.VideoWriter(video_path, cv2.VideoWriter_fourcc("X", "V", "I", "D"), float(FPS), (652, 449))
+    for image_path in label_dict:
+        frame = cv2.imread(image_path)
+        text_scenarios = ""
+        for j in range(SCENARIOS.__len__()):
+            if label_dict[image_path][j] == 1:
+                text_scenarios = text_scenarios + " " + SCENARIOS[j]
+        # todo text for scenes
+        cv2.putText(frame, text_scenarios, (150, 50), cv2.FONT_HERSHEY_PLAIN, 2, (0, 0, 0))
+        # cv2.putText(frame, text_scenes, (150, 80), cv2.FONT_HERSHEY_PLAIN, 2, (0, 0, 0))
+        # cv2.imshow("title", frame)
+        # cv2.waitKey(1)
+        out.write(frame)
+    out.release()
+    cv2.destroyAllWindows()
+    pass
+
