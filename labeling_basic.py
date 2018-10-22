@@ -33,19 +33,21 @@ def label_scenarios(data, metadata, all_vehicles, images):
     label_dict = dict()
     index = 0
     for image_path in images:
+        data_index = int(index * DATA_HZ / 5)
         label = np.zeros(SCENARIOS.__len__())
-        data_index = int(index*DATA_HZ/5)
-        label[0] = free_cruising_fn(data[data_index, :], metadata)
-        label[1] = approaching_fn(data[data_index, :], metadata)
-        label[2] = following_fn(data[data_index, :], metadata)
-        label[3] = catching_up_fn(data[data_index, :], metadata)
-        label[4] = overtaking_fn(data[data_index, :], metadata)
-        label[5] = lane_change_left_fn(data[data_index, :], metadata)
-        label[6] = lane_change_right_fn(data[data_index, :], metadata)
-        label[7] = v2_catching_up_fn(data[data_index, :], metadata)
-        label[8] = v2_overtaking_fn(data[data_index, :], metadata)
-        label[9] = data_index
-        #label[9] = unknown_fn(label)
+        s_0, s_1, s_2, s_3 = get_ego_vehicle_data(data, metadata, data_index)
+        relevant_vehicles = get_relevant_vehicles(data, metadata, all_vehicles, s_1, data_index)
+
+        label[0] = free_cruising_fn(data[data_index, :], metadata, relevant_vehicles)
+        label[1] = approaching_fn(data[data_index, :], metadata, relevant_vehicles)
+        label[2] = following_fn(data[data_index, :], metadata, relevant_vehicles)
+        label[3] = catching_up_fn(data[data_index, :], metadata, relevant_vehicles)
+        label[4] = overtaking_fn(data[data_index, :], metadata, relevant_vehicles)
+        label[5] = lane_change_left_fn(data[data_index, :], metadata, relevant_vehicles)
+        label[6] = lane_change_right_fn(data[data_index, :], metadata, relevant_vehicles)
+        label[7] = v2_catching_up_fn(data[data_index, :], metadata, relevant_vehicles)
+        label[8] = v2_overtaking_fn(data[data_index, :], metadata, relevant_vehicles)
+        label[9] = unknown_fn(label)
         # scenarios_labeled = smoothing_fn(scenes_labeled)
         # scenarios_labeled[:, 9] = unknown_fn(scenarios_labeled)
         label_dict.update({image_path: label})
@@ -58,8 +60,7 @@ def get_ego_vehicle_data(data, metadata, index):
     s_1 = data[index, metadata.index("Car.v")] * 3.6 * 2 / 3
     s_2 = data[index, metadata.index("Car.v")] * 3.6 * 1 / 2
     s_3 = data[index, metadata.index("Car.v")] * 3.6 * 1 / 3
-    ego_v = data[index, metadata.index("Car.v")]
-    return s_0, s_1, s_2, s_3, ego_v
+    return s_0, s_1, s_2, s_3
 
 
 def get_relevant_vehicles(data, metadata, all_vehicles, s_1, index):
@@ -75,41 +76,44 @@ def get_relevant_vehicles(data, metadata, all_vehicles, s_1, index):
     return relevant_vehicles
 
 
-def free_cruising_fn(data, metadata):
+def free_cruising_fn(data, metadata, relevant_vehicles):
+    if (relevant_vehicles.__len__() == 0 and
+            data[metadata.index("Car.v")] > 17):
+        return 1
     return 0
 
 
-def approaching_fn(data, metadata):
+def approaching_fn(data, metadata, relevant_vehicles):
     return 0
 
 
-def following_fn(data, metadata):
+def following_fn(data, metadata, relevant_vehicles):
     return 0
 
 
-def catching_up_fn(data, metadata):
+def catching_up_fn(data, metadata, relevant_vehicles):
     return 0
 
 
-def overtaking_fn(data, metadata):
+def overtaking_fn(data, metadata, relevant_vehicles):
     return 0
 
 
-def lane_change_left_fn(data, metadata):
+def lane_change_left_fn(data, metadata, relevant_vehicles):
     return 0
 
 
-def lane_change_right_fn(data, metadata):
+def lane_change_right_fn(data, metadata, relevant_vehicles):
     return 0
 
 
-def v2_catching_up_fn(data, metadata):
+def v2_catching_up_fn(data, metadata, relevant_vehicles):
     return 0
 
 
-def v2_overtaking_fn(data, metadata):
+def v2_overtaking_fn(data, metadata, relevant_vehicles):
     return 0
 
 
-def unknown_fn(data, metadata):
+def unknown_fn(label):
     return 1
