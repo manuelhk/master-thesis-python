@@ -137,9 +137,11 @@ def overtaking_fn(relevant_vehicles, ego_vehicle):
 
 
 def lane_change_left_fn(data, metadata, index):
+    rows, columns = data.shape
     lower_index = max(index - 200, 0)
+    upper_index = min(index + 200, rows - 1)
     first_lane = data[lower_index, metadata.index("Car.Road.Lane.Act.LaneId")]
-    for i in range(lower_index, index):
+    for i in range(lower_index, upper_index):
         second_lane = data[i, metadata.index("Car.Road.Lane.Act.LaneId")]
         if first_lane == second_lane + 1:
             return 1
@@ -147,9 +149,11 @@ def lane_change_left_fn(data, metadata, index):
 
 
 def lane_change_right_fn(data, metadata, index):
+    rows, columns = data.shape
     lower_index = max(index - 200, 0)
+    upper_index = min(index + 200, rows - 1)
     first_lane = data[lower_index, metadata.index("Car.Road.Lane.Act.LaneId")]
-    for i in range(lower_index, index):
+    for i in range(lower_index, upper_index):
         second_lane = data[i, metadata.index("Car.Road.Lane.Act.LaneId")]
         if first_lane == second_lane - 1:
             return 1
