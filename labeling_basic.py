@@ -5,8 +5,7 @@ import my_vehicle
 
 DATA_HZ = 50
 FPS = 5
-MIN_CONSECUTIVE_SCENES = 15    # minimal number of required consecutive scenes to be a scenario
-MAX_ERROR_RATE = 0.2           # maximal number of scenes in row that are different
+MIN_CONSECUTIVE_SCENES = 15    # minimum number of required consecutive scenes to be a scenario
 SCENARIOS = {"FREE_CRUISING": 0, "APPROACHING": 1, "FOLLOWING": 2,
              "CATCHING_UP": 3, "OVERTAKING": 4, "LANE_CHANGE_LEFT": 5, "LANE_CHANGE_RIGHT": 6,
              "V2_CATCHING_UP": 7, "V2_OVERTAKING": 8, "UNKNOWN": 9}
@@ -36,7 +35,7 @@ def label_scenarios(data, metadata, all_vehicles, images):
     for i, image_path in enumerate(images):
         if i % 100 == 0:
             print("Status: " + str(i) + "/" + str(images.__len__()))
-        data_index = int(i * DATA_HZ / 5)
+        data_index = int(i * DATA_HZ / FPS)
         ego_vehicle = get_ego_vehicle(data, metadata, data_index)
         relevant_vehicles = get_relevant_vehicles(data[data_index, :], metadata, all_vehicles, ego_vehicle)
 
@@ -188,6 +187,13 @@ def unknown_fn(labels):
 def smoothing_fn(scenes):
     rows, columns = scenes.shape
     scenarios = np.zeros((rows, columns))
-
-
+    for i in range(columns):
+        flag = 0
+        for j in range(rows):
+            if scenes[j, i] == 0:
+                if j - flag >= MIN_CONSECUTIVE_SCENES:
+                    for k in range(flag, j):
+                        print(k)
+                        scenarios[k, i] = 1
+                flag = j+1
     return scenarios
