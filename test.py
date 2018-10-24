@@ -12,5 +12,5 @@ VIDEO_PATH = "data/video.avi"
 
 """ Labeling data..."""
 data, metadata, all_vehicles, images = lb.get_data(DATA_PATH, FRAMES_PATH)
-label_dict = lb.label_scenarios(data, metadata, all_vehicles, images, SCENARIOS, MIN_CONSECUTIVE_SCENES)
-# lb.save_video(label_dict, VIDEO_PATH, SCENARIOS)
+label_dict, label_dict_scenes = lb.label_scenarios(data, metadata, all_vehicles, images, SCENARIOS, MIN_CONSECUTIVE_SCENES)
+lb.save_video(label_dict, VIDEO_PATH, SCENARIOS, label_dict_scenes)

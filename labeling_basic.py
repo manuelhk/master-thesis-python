@@ -47,10 +47,12 @@ def label_scenarios(data, metadata, all_vehicles, images, scenarios, min_consecu
 
     scenarios_labels = smoothing_fn(scenes_labels, min_consecutive_scenes)
     label_dict = dict()
+    label_dict_scenes = dict()
     for j, image_path in enumerate(images):
         scenarios_labels[j, 9] = unknown_fn(scenarios_labels[j, :])
         label_dict.update({image_path: scenarios_labels[j, :]})
-    return label_dict
+        label_dict_scenes.update(({image_path: scenes_labels[j, :]}))
+    return label_dict, label_dict_scenes
 
 
 def get_ego_vehicle(data, metadata, index):
@@ -132,8 +134,8 @@ def overtaking_fn(relevant_vehicles, ego_vehicle):
 
 def lane_change_left_fn(data, metadata, index):
     rows, columns = data.shape
-    lower_index = max(index - 200, 0)
-    upper_index = min(index + 200, rows - 1)
+    lower_index = max(index - 10, 0)
+    upper_index = min(index + 10, rows - 1)
     first_lane = data[lower_index, metadata.index("Car.Road.Lane.Act.LaneId")]
     for i in range(lower_index, upper_index):
         second_lane = data[i, metadata.index("Car.Road.Lane.Act.LaneId")]
@@ -144,8 +146,8 @@ def lane_change_left_fn(data, metadata, index):
 
 def lane_change_right_fn(data, metadata, index):
     rows, columns = data.shape
-    lower_index = max(index - 200, 0)
-    upper_index = min(index + 200, rows - 1)
+    lower_index = max(index - 10, 0)
+    upper_index = min(index + 10, rows - 1)
     first_lane = data[lower_index, metadata.index("Car.Road.Lane.Act.LaneId")]
     for i in range(lower_index, upper_index):
         second_lane = data[i, metadata.index("Car.Road.Lane.Act.LaneId")]
@@ -196,18 +198,20 @@ def smoothing_fn(scenes, min_consecutive_scenes):
     return scenarios
 
 
-def save_video(label_dict, video_path, scenarios):
+def save_video(label_dict, video_path, scenarios, label_dict_scenes):
     print("Save video...")
     out = cv2.VideoWriter(video_path, cv2.VideoWriter_fourcc("X", "V", "I", "D"), 5, (150, 150))
     for image_path in label_dict:
         frame = cv2.imread(image_path)
         text_scenarios = ""
+        text_scenes = ""
         for j in range(scenarios.__len__()):
             if label_dict[image_path][j] == 1:
                 text_scenarios = text_scenarios + " " + scenarios[j]
-        # todo text for scenes
-        cv2.putText(frame, text_scenarios, (10, 10), cv2.FONT_HERSHEY_PLAIN, 1, (0, 0, 0))
-        # cv2.putText(frame, text_scenes, (150, 80), cv2.FONT_HERSHEY_PLAIN, 2, (0, 0, 0))
+            if label_dict_scenes[image_path][j] == 1:
+                text_scenes = text_scenes + " " + scenarios[j]
+        cv2.putText(frame, text_scenarios, (10, 10), cv2.FONT_HERSHEY_PLAIN, 0.5, (0, 0, 0))
+        cv2.putText(frame, text_scenes, (10, 30), cv2.FONT_HERSHEY_PLAIN, 0.5, (0, 0, 0))
         # cv2.imshow("title", frame)
         # cv2.waitKey(1)
         out.write(frame)
