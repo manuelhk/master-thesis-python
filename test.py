@@ -3,10 +3,12 @@ import preprocessing as pp
 
 
 MIN_CONSECUTIVE_SCENES = 15    # minimum number of required consecutive scenes to be a scenario
-SCENARIOS = ["FREE_CRUISING", "APPROACHING", "FOLLOWING",
-             "CATCHING_UP", "OVERTAKING", "LANE_CHANGE_LEFT", "LANE_CHANGE_RIGHT",
-             "V2_CATCHING_UP", "V2_OVERTAKING", "UNKNOWN"]
-DATA_PATH = "data/data.dat"
+SCENARIOS = ["free_cruising", "approaching", "following",
+             "catching_up", "overtaking", "lane_change_left", "lane_change_right",
+             "v2_catching_up", "v2_overtaking", "unknown"]
+
+ROOT_PATH_DATA = "data"
+ROOT_PATH_FRAMES = "data"
 FRAMES_PATH = "data/frames"
 VIDEO_PATH = "data/video2.avi"
 OUT_PATH = "test"
