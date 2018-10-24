@@ -47,12 +47,12 @@ def label_scenarios(data, metadata, all_vehicles, images, scenarios, min_consecu
 
     scenarios_labels = smoothing_fn(scenes_labels, min_consecutive_scenes)
     label_dict = dict()
-    label_dict_scenes = dict()
+    # label_dict_scenes = dict()
     for j, image_path in enumerate(images):
-        scenarios_labels[j, 9] = unknown_fn(scenarios_labels[j, :])
+        scenarios_labels[j, 9] = unknown_fn(scenarios_labels[j, :8])
         label_dict.update({image_path: scenarios_labels[j, :]})
-        label_dict_scenes.update(({image_path: scenes_labels[j, :]}))
-    return label_dict, label_dict_scenes
+        # label_dict_scenes.update(({image_path: scenes_labels[j, :]}))
+    return label_dict, scenarios_labels
 
 
 def get_ego_vehicle(data, metadata, index):
@@ -198,20 +198,20 @@ def smoothing_fn(scenes, min_consecutive_scenes):
     return scenarios
 
 
-def save_video(label_dict, video_path, scenarios, label_dict_scenes):
+def save_video(label_dict, video_path, scenarios):
     print("Save video...")
     out = cv2.VideoWriter(video_path, cv2.VideoWriter_fourcc("X", "V", "I", "D"), 5, (150, 150))
     for image_path in label_dict:
         frame = cv2.imread(image_path)
         text_scenarios = ""
-        text_scenes = ""
+        # text_scenes = ""
         for j in range(scenarios.__len__()):
             if label_dict[image_path][j] == 1:
                 text_scenarios = text_scenarios + " " + scenarios[j]
-            if label_dict_scenes[image_path][j] == 1:
-                text_scenes = text_scenes + " " + scenarios[j]
+        #    if label_dict_scenes[image_path][j] == 1:
+        #        text_scenes = text_scenes + " " + scenarios[j]
         cv2.putText(frame, text_scenarios, (10, 10), cv2.FONT_HERSHEY_PLAIN, 0.5, (0, 0, 0))
-        cv2.putText(frame, text_scenes, (10, 30), cv2.FONT_HERSHEY_PLAIN, 0.5, (0, 0, 0))
+        # cv2.putText(frame, text_scenes, (10, 30), cv2.FONT_HERSHEY_PLAIN, 0.5, (0, 0, 0))
         # cv2.imshow("title", frame)
         # cv2.waitKey(1)
         out.write(frame)
