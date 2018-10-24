@@ -4,17 +4,9 @@ import cv2
 import my_vehicle
 
 
-DATA_HZ = 50
-FPS = 5
-MIN_CONSECUTIVE_SCENES = 15    # minimum number of required consecutive scenes to be a scenario
-SCENARIOS = ["FREE_CRUISING", "APPROACHING", "FOLLOWING",
-             "CATCHING_UP", "OVERTAKING", "LANE_CHANGE_LEFT", "LANE_CHANGE_RIGHT",
-             "V2_CATCHING_UP", "V2_OVERTAKING", "UNKNOWN"]
-
-
 def get_data(data_path, frames_path):
     """ Import data from path """
-    print("Loading data...")
+    print("Import data: " + data_path)
     data = np.genfromtxt(data_path)
     d = np.genfromtxt(data_path, comments=None, dtype=str, max_rows=1)
     d = d[1:]
@@ -30,33 +22,35 @@ def get_data(data_path, frames_path):
     return data, metadata, all_vehicles, images
 
 
-def label_scenarios(data, metadata, all_vehicles, images):
-    print("Labeling data...")
-    scenes_labels = np.zeros((images.__len__(), SCENARIOS.__len__()))
+def label_scenarios(data, metadata, all_vehicles, images, scenarios, min_consecutive_scenes):
+    rows, columns = data.shape
+    print("Label data...")
+    scenes_labels = np.zeros((images.__len__(), scenarios.__len__()))
     for i, image_path in enumerate(images):
+        if i >= rows:
+            break
         if i % 100 == 0:
-            print("Status: " + str(i) + "/" + str(images.__len__()))
-        data_index = int(i * DATA_HZ / FPS)
-        ego_vehicle = get_ego_vehicle(data, metadata, data_index)
-        relevant_vehicles = get_relevant_vehicles(data[data_index, :], metadata, all_vehicles, ego_vehicle)
+            print("Scenes: " + str(i) + "/" + str(images.__len__()))
+        ego_vehicle = get_ego_vehicle(data, metadata, i)
+        relevant_vehicles = get_relevant_vehicles(data[i, :], metadata, all_vehicles, ego_vehicle)
 
-        scenes_labels[i, 0] = free_cruising_fn(data[data_index, :], metadata, relevant_vehicles)
-        scenes_labels[i, 1] = approaching_fn(data, metadata, relevant_vehicles, ego_vehicle, data_index)
+        scenes_labels[i, 0] = free_cruising_fn(data[i, :], metadata, relevant_vehicles)
+        scenes_labels[i, 1] = approaching_fn(data, metadata, relevant_vehicles, ego_vehicle, i)
         scenes_labels[i, 2] = following_fn(relevant_vehicles, ego_vehicle)
         scenes_labels[i, 3] = catching_up_fn(relevant_vehicles, ego_vehicle)
         scenes_labels[i, 4] = overtaking_fn(relevant_vehicles, ego_vehicle)
-        scenes_labels[i, 5] = lane_change_left_fn(data, metadata, data_index)
-        scenes_labels[i, 6] = lane_change_right_fn(data, metadata, data_index)
+        scenes_labels[i, 5] = lane_change_left_fn(data, metadata, i)
+        scenes_labels[i, 6] = lane_change_right_fn(data, metadata, i)
         scenes_labels[i, 7] = v2_catching_up_fn(relevant_vehicles, ego_vehicle)
         scenes_labels[i, 8] = v2_overtaking_fn(relevant_vehicles, ego_vehicle)
         scenes_labels[i, 9] = unknown_fn(scenes_labels[i, :])
 
-    scenarios_labels = smoothing_fn(scenes_labels)
+    scenarios_labels = smoothing_fn(scenes_labels, min_consecutive_scenes)
     label_dict = dict()
     for j, image_path in enumerate(images):
         scenarios_labels[j, 9] = unknown_fn(scenarios_labels[j, :])
         label_dict.update({image_path: scenarios_labels[j, :]})
-    return label_dict, SCENARIOS
+    return label_dict
 
 
 def get_ego_vehicle(data, metadata, index):
@@ -188,31 +182,31 @@ def unknown_fn(labels):
     return 0
 
 
-def smoothing_fn(scenes):
+def smoothing_fn(scenes, min_consecutive_scenes):
     rows, columns = scenes.shape
     scenarios = np.zeros((rows, columns))
     for i in range(columns):
         flag = 0
         for j in range(rows):
             if scenes[j, i] == 0:
-                if j - flag >= MIN_CONSECUTIVE_SCENES:
+                if j - flag >= min_consecutive_scenes:
                     for k in range(flag, j):
                         scenarios[k, i] = 1
                 flag = j+1
     return scenarios
 
 
-def save_video(label_dict, video_path):
-    print("Saving video...")
-    out = cv2.VideoWriter(video_path, cv2.VideoWriter_fourcc("X", "V", "I", "D"), float(FPS), (652, 449))
+def save_video(label_dict, video_path, scenarios):
+    print("Save video...")
+    out = cv2.VideoWriter(video_path, cv2.VideoWriter_fourcc("X", "V", "I", "D"), 5, (150, 150))
     for image_path in label_dict:
         frame = cv2.imread(image_path)
         text_scenarios = ""
-        for j in range(SCENARIOS.__len__()):
+        for j in range(scenarios.__len__()):
             if label_dict[image_path][j] == 1:
-                text_scenarios = text_scenarios + " " + SCENARIOS[j]
+                text_scenarios = text_scenarios + " " + scenarios[j]
         # todo text for scenes
-        cv2.putText(frame, text_scenarios, (150, 50), cv2.FONT_HERSHEY_PLAIN, 2, (0, 0, 0))
+        cv2.putText(frame, text_scenarios, (10, 10), cv2.FONT_HERSHEY_PLAIN, 1, (0, 0, 0))
         # cv2.putText(frame, text_scenes, (150, 80), cv2.FONT_HERSHEY_PLAIN, 2, (0, 0, 0))
         # cv2.imshow("title", frame)
         # cv2.waitKey(1)
@@ -220,4 +214,3 @@ def save_video(label_dict, video_path):
     out.release()
     cv2.destroyAllWindows()
     pass
-

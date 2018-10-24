@@ -1,11 +1,12 @@
+import glob
+import random
 import keras
-import preprocessing
 import numpy as np
 
 
 """ 
-    Article: A detailed example of how to use data generators with Keras
     Source: https://stanford.edu/~shervine/blog/keras-how-to-generate-data-on-the-fly 
+            A detailed example of how to use data generators with Keras
 """
 
 
@@ -61,13 +62,32 @@ class DataGenerator(keras.utils.Sequence):
         return data, keras.utils.to_categorical(labels, num_classes=self.n_classes)
 
 
-def build_data_generators(directory):
-    params = {'dim': (25, 150, 150),
-              'batch_size': 5,
-              'n_classes': 2,
-              'n_channels': 3,
-              'shuffle': True}
-    data, labels = preprocessing.get_data_and_labels(directory)
+def build_data_generators(directory, params):
+    data, labels = get_data_and_labels(directory)
     train_generator = DataGenerator(data['train'], labels, **params)
     validation_generator = DataGenerator(data['validation'], labels, **params)
     return train_generator, validation_generator
+
+
+def get_data_and_labels(directory):
+    """ Accesses directory and creates two dictionaries with filenames .npy. One for labels and the other for data. """
+    paths = glob.glob(directory + "/*/*.npy")
+    # paths.sort()
+    labels_dict = dict()
+    for path in paths:  # todo create method to label data correctly
+        if "label0" in path:
+            labels_dict.update({path: 0})
+        else:
+            labels_dict.update({path: 1})
+    # labels = [0 if "left" in path else 1 for path in paths]
+    data_dict = split_into_training_and_validation(paths)
+    return data_dict, labels_dict
+
+
+def split_into_training_and_validation(list_of_paths, share_training_data=0.8):
+    """ Splits data into training data and validation data and returns a dictionary with two lists """
+    random.shuffle(list_of_paths)
+    train_list = list_of_paths[:np.math.floor(len(list_of_paths)*share_training_data)]
+    eval_list = list_of_paths[np.math.floor(len(list_of_paths)*share_training_data):]
+    data_dict = {"train": train_list, "validation": eval_list}
+    return data_dict

@@ -1,10 +1,7 @@
 import keras
 
 
-NO_OF_LABELS = 2
-
-
-def build_model():
+def build_model(no_of_labels):
     # create input layer
     video = keras.Input(shape=(None, 150, 150, 3), name="video")
 
@@ -17,7 +14,7 @@ def build_model():
     frame_features = keras.layers.TimeDistributed(cnn)(video)
     video_vector = keras.layers.LSTM(256)(frame_features)
     x = keras.layers.Dense(128, activation="relu")(video_vector)
-    predictions = keras.layers.Dense(units=NO_OF_LABELS, activation='softmax', name='predictions')(x)
+    predictions = keras.layers.Dense(units=no_of_labels, activation='softmax', name='predictions')(x)
 
     # build final model
     model = keras.Model(inputs=video, outputs=predictions)
