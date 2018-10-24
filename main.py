@@ -4,7 +4,7 @@ import my_model
 import my_generator
 
 
-directory = "test_data/"
+directory = "test_data"
 
 
 # print("Labeling data...")
@@ -17,8 +17,8 @@ directory = "test_data/"
 
 
 """ Build, compile and train model """
-# model = my_model.build_model()
-# model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
-# print(model.summary())
-# train_generator, validation_generator = my_generator.build_data_generators(directory)
-# model.fit_generator(generator=train_generator, validation_data=validation_generator, epochs=5)
+model = my_model.build_model()
+model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+print(model.summary())
+train_generator, validation_generator = my_generator.build_data_generators(directory)
+model.fit_generator(generator=train_generator, validation_data=validation_generator, epochs=5)
