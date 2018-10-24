@@ -27,10 +27,8 @@ def load_image(image_path):
 def videos_to_npy(directory):
     """ Accesses every video folder in directory and saves a .npy file respectively"""
     videos = glob.glob(directory + "*")
-    i = 0
-    for path in videos:
+    for i, path in enumerate(videos):
         np.save(directory + str(i) + ".npy", load_video(path))
-        i += 1
     pass
 
 
@@ -38,8 +36,6 @@ def images_to_npy(directory):
     """ Accesses every image in directory and creates and saves a .npy file respectively """
     images = glob.glob(directory + "*.jpg")
     images.sort()
-    i = 0
-    for path in images:
+    for i, path in enumerate(images):
         np.save(directory + str(i) + ".npy", load_image(path))
-        i += 1
     pass
