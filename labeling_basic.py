@@ -6,7 +6,7 @@ import my_vehicle
 
 def get_data(data_path, frames_path):
     """ Import data from path """
-    print("Import data...")
+    print("Import data: " + data_path)
     data = np.genfromtxt(data_path)
     d = np.genfromtxt(data_path, comments=None, dtype=str, max_rows=1)
     d = d[1:]
@@ -23,9 +23,12 @@ def get_data(data_path, frames_path):
 
 
 def label_scenarios(data, metadata, all_vehicles, images, scenarios, min_consecutive_scenes):
+    rows, columns = data.shape
     print("Label data...")
     scenes_labels = np.zeros((images.__len__(), scenarios.__len__()))
     for i, image_path in enumerate(images):
+        if i >= rows:
+            break
         if i % 100 == 0:
             print("Scenes: " + str(i) + "/" + str(images.__len__()))
         ego_vehicle = get_ego_vehicle(data, metadata, i)
@@ -194,7 +197,7 @@ def smoothing_fn(scenes, min_consecutive_scenes):
 
 
 def save_video(label_dict, video_path, scenarios):
-    print("Saving video...")
+    print("Save video...")
     out = cv2.VideoWriter(video_path, cv2.VideoWriter_fourcc("X", "V", "I", "D"), 5, (150, 150))
     for image_path in label_dict:
         frame = cv2.imread(image_path)
