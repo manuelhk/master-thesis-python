@@ -3,26 +3,23 @@ import numpy as np
 import glob
 
 
-IMAGE_SHAPE = (150, 150)
-
-
 def load_video(video_path):
     """ Loads images in defined folder (from one video) and returns numpy of video """
     images = glob.glob(video_path + "/*.jpg")
     images.sort()
-    list = []
+    img_list = []
     for image_path in images:
         image = load_image(image_path)
-        image = cv2.resize(image, IMAGE_SHAPE)
-        list.append(image)
-    video_np = np.array(list)
+        image = cv2.resize(image, (150, 150))
+        img_list.append(image)
+    video_np = np.array(img_list)
     return video_np
 
 
 def load_image(image_path):
     """ Loads image and returns numpy of image"""
     image = cv2.imread(image_path)
-    image = cv2.resize(image, IMAGE_SHAPE)
+    image = cv2.resize(image, (150, 150))
     image_np = np.array(image)
     return image_np
 
