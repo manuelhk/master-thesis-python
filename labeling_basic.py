@@ -6,7 +6,7 @@ import my_vehicle
 
 def get_data(data_path, frames_path):
     """ Import data from path """
-    print("Import data: " + data_path)
+    # print("Import data: " + data_path)
     data = np.genfromtxt(data_path)
     d = np.genfromtxt(data_path, comments=None, dtype=str, max_rows=1)
     d = d[1:]
@@ -24,13 +24,13 @@ def get_data(data_path, frames_path):
 
 def label_scenarios(data, metadata, all_vehicles, images, scenarios, min_consecutive_scenes):
     rows, columns = data.shape
-    print("Label data...")
+    # print("Label data...")
     scenes_labels = np.zeros((images.__len__(), scenarios.__len__()))
     for i, image_path in enumerate(images):
         if i >= rows:
             break
-        if i % 100 == 0:
-            print("Scenes: " + str(i) + "/" + str(images.__len__()))
+        # if i % 100 == 0:
+        #    print("Scenes: " + str(i) + "/" + str(images.__len__()))
         ego_vehicle = get_ego_vehicle(data, metadata, i)
         relevant_vehicles = get_relevant_vehicles(data[i, :], metadata, all_vehicles, ego_vehicle)
 
@@ -52,7 +52,7 @@ def label_scenarios(data, metadata, all_vehicles, images, scenarios, min_consecu
         scenarios_labels[j, 9] = unknown_fn(scenarios_labels[j, :8])
         label_dict.update({image_path: scenarios_labels[j, :]})
         # label_dict_scenes.update(({image_path: scenes_labels[j, :]}))
-    return label_dict, scenarios_labels
+    return scenarios_labels
 
 
 def get_ego_vehicle(data, metadata, index):
