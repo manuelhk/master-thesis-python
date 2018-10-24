@@ -6,7 +6,7 @@ import my_vehicle
 
 def get_data(data_path, frames_path):
     """ Import data from path """
-    print("Loading data...")
+    print("Import data...")
     data = np.genfromtxt(data_path)
     d = np.genfromtxt(data_path, comments=None, dtype=str, max_rows=1)
     d = d[1:]
@@ -23,11 +23,11 @@ def get_data(data_path, frames_path):
 
 
 def label_scenarios(data, metadata, all_vehicles, images, scenarios, min_consecutive_scenes):
-    print("Labeling data...")
+    print("Label data...")
     scenes_labels = np.zeros((images.__len__(), scenarios.__len__()))
     for i, image_path in enumerate(images):
         if i % 100 == 0:
-            print("Status: " + str(i) + "/" + str(images.__len__()))
+            print("Scenes: " + str(i) + "/" + str(images.__len__()))
         ego_vehicle = get_ego_vehicle(data, metadata, i)
         relevant_vehicles = get_relevant_vehicles(data[i, :], metadata, all_vehicles, ego_vehicle)
 
@@ -203,7 +203,7 @@ def save_video(label_dict, video_path, scenarios):
             if label_dict[image_path][j] == 1:
                 text_scenarios = text_scenarios + " " + scenarios[j]
         # todo text for scenes
-        cv2.putText(frame, text_scenarios, (150, 50), cv2.FONT_HERSHEY_PLAIN, 2, (0, 0, 0))
+        cv2.putText(frame, text_scenarios, (10, 10), cv2.FONT_HERSHEY_PLAIN, 1, (0, 0, 0))
         # cv2.putText(frame, text_scenes, (150, 80), cv2.FONT_HERSHEY_PLAIN, 2, (0, 0, 0))
         # cv2.imshow("title", frame)
         # cv2.waitKey(1)
