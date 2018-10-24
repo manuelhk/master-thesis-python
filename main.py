@@ -1,12 +1,11 @@
-import labeling
-# import time
-import my_model
-import my_generator
 
 
-directory = "test_data"
 
 
+
+
+
+""" Label and save data as *.npy-files """
 # print("Labeling data...")
 # start = time.clock()
 # data, metadata = labeling.get_data("data/data/0810/hc/data.dat")
@@ -17,8 +16,4 @@ directory = "test_data"
 
 
 """ Build, compile and train model """
-model = my_model.build_model()
-model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
-print(model.summary())
-train_generator, validation_generator = my_generator.build_data_generators(directory)
-model.fit_generator(generator=train_generator, validation_data=validation_generator, epochs=5)
+
