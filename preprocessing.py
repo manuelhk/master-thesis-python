@@ -25,9 +25,12 @@ def load_video(images):
 def split_label(label_np, min_consecutive_scenes):
     start_indices = []
     rows = label_np.__len__()
-    for i in range(rows):
+    i = 0
+    while i < rows:
         if np.sum(label_np[i:i+min_consecutive_scenes]) == min_consecutive_scenes:
             start_indices.append(i)
+            i = i + min_consecutive_scenes
+        i += 1
     return start_indices
 
 
@@ -40,7 +43,7 @@ def prepare_images(label_np, images, scenarios, min_consecutive_scenes, out_path
         start_indices = split_label(label_np[:, i], min_consecutive_scenes)
         for index in start_indices:
             video_np = load_video(images[index: index+min_consecutive_scenes])
-            np.save(label_dir + "/" + str(no_existing_files), video_np)
+            np.save(label_dir + "/" + scenarios[i] + "_" + str(no_existing_files), video_np)
             no_existing_files += 1
         print(scenarios[i] + ": " + str(start_indices.__len__()) + " new video arrays")
     pass
