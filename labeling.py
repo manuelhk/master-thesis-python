@@ -16,7 +16,6 @@ def get_data(path):
     d = np.genfromtxt(path, comments=None, dtype=str, max_rows=1)
     d = d[1:]
     # Create list for data description (metadata)
-    # global metadata
     metadata = []
     for element in d:
         metadata.append(element)

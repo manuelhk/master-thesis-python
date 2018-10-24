@@ -5,7 +5,6 @@ import random
 
 
 IMAGE_SHAPE = (150, 150)
-ROOT_DIRECTORY = "data/"
 
 
 def load_video(video_path):
@@ -52,7 +51,7 @@ def images_to_npy(directory):
 
 def get_data_and_labels(directory):
     """ Accesses directory and creates two dictionaries with filenames .npy. One for labels and the other for data. """
-    paths = glob.glob(directory + "*/*.npy")
+    paths = glob.glob(directory + "/*/*.npy")
     # paths.sort()
     labels_dict = dict()
     for path in paths:  # todo create method to label data correctly
@@ -72,7 +71,3 @@ def split_into_training_and_validation(list_of_paths, share_training_data=0.8):
     eval_list = list_of_paths[np.math.floor(len(list_of_paths)*share_training_data):]
     data_dict = {"train": train_list, "validation": eval_list}
     return data_dict
-
-
-dir = ROOT_DIRECTORY + "test/"
-# video_paths = glob.glob(dir + "*")

@@ -4,7 +4,7 @@ import my_model
 import my_generator
 
 
-directory = "test_data/"
+directory = "test_data"
 
 
 # print("Labeling data...")
