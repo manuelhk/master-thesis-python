@@ -1,21 +1,38 @@
 import keras
 
 
-def build_model(no_of_labels):
-    # create input layer
-    video = keras.Input(shape=(None, 150, 150, 3), name="video")
-
-    # load existing CNN with pre-trained wheights
+def build_model_inceptionV3_LSTM(no_of_labels):
+    video = keras.Input(shape=(15, 150, 150, 3), name="video")
     cnn = keras.applications.InceptionV3(weights="imagenet", include_top=False, pooling="avg")
-    cnn.trainable = False
-    # print(cnn.summary())
+    x = keras.layers.TimeDistributed(cnn)(video)
+    x = keras.layers.LSTM(256)(x)
+    x = keras.layers.Dense(1024, activation="relu")(x)
+    x = keras.layers.Dropout(0.5)(x)
+    x = keras.layers.Dense(1024, activation="relu")(x)
+    output = keras.layers.Dense(units=no_of_labels, activation="softmax", name='predictions')(x)
+    model = keras.Model(inputs=video, outputs=output)
+    return model
 
-    # create LSTM and output layer
+
+def build_model_VGG16_LSTM(no_of_labels):
+    video = keras.Input(shape=(15, 150, 150, 3), name="video")
+    cnn = keras.applications.vgg16.VGG16(include_top=False, weights='imagenet', pooling="avg")
     frame_features = keras.layers.TimeDistributed(cnn)(video)
-    video_vector = keras.layers.LSTM(256)(frame_features)
-    x = keras.layers.Dense(128, activation="relu")(video_vector)
-    predictions = keras.layers.Dense(units=no_of_labels, activation='softmax', name='predictions')(x)
+    video_vector = keras.layers.LSTM(128)(frame_features)
+    x = keras.layers.Dense(256, activation="relu")(video_vector)
+    output = keras.layers.Dense(units=no_of_labels, activation="softmax", name='predictions')(x)
+    model = keras.Model(inputs=video, outputs=output)
+    return model
 
-    # build final model
-    model = keras.Model(inputs=video, outputs=predictions)
+
+def build_model_VGG16(no_of_labels):
+    image = keras.Input(shape=(150, 150, 3), name="image")
+    cnn = keras.applications.vgg16.VGG16(include_top=False, weights='imagenet')
+    x = cnn(image)
+    x = keras.layers.Flatten()(x)
+    x = keras.layers.Dense(1024, activation="relu")(x)
+    x = keras.layers.Dropout(0.5)(x)
+    x = keras.layers.Dense(1024, activation="relu")(x)
+    output = keras.layers.Dense(no_of_labels, activation="softmax")(x)
+    model = keras.Model(inputs=image, outputs=output)
     return model

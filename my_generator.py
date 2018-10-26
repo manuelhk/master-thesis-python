@@ -12,8 +12,8 @@ import numpy as np
 
 class DataGenerator(keras.utils.Sequence):
     """ Generates data for Keras """
-    def __init__(self, list_IDs, labels, batch_size=32, dim=(224, 224), n_channels=3,
-                 n_classes=10, shuffle=True):
+    def __init__(self, list_IDs, labels, batch_size=20, dim=(150, 150), n_channels=3,
+                 n_classes=3, shuffle=True):
         """ Initialization """
         self.dim = dim
         self.batch_size = batch_size
@@ -56,7 +56,8 @@ class DataGenerator(keras.utils.Sequence):
         # Generate data
         for i, ID in enumerate(list_IDs_temp):
             # Store sample
-            data[i, ] = np.load(ID)
+            a = np.load(ID)
+            data[i, ] = keras.applications.inception_v3.preprocess_input(a)
             # Store class
             labels[i] = self.labels[ID]
         return data, keras.utils.to_categorical(labels, num_classes=self.n_classes)
@@ -74,7 +75,7 @@ def get_data_and_labels(directory, scenarios):
     paths = glob.glob(directory + "/*/*.npy")
     # paths.sort()
     labels_dict = dict()
-    for path in paths:  # todo create method to label data correctly
+    for path in paths:
         for label in scenarios:
             if label in path:
                 labels_dict.update({path: scenarios.index(label)})
