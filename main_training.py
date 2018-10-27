@@ -15,10 +15,10 @@ PARAMS = {'dim': (15, 150, 150),
 
 def training():
     model = my_model.build_model_inceptionV3_LSTM(SCENARIOS.__len__())
-    model.compile(loss='categorical_crossentropy', optimizer="adam", metrics=["accuracy"])
+    model.compile(loss='categorical_crossentropy', optimizer=keras.optimizers.Adam(lr=0.1), metrics=["accuracy"])
     print(model.summary())
     train_generator, validation_generator = my_generator.build_data_generators(DIRECTORY, SCENARIOS, PARAMS)
-    model.fit_generator(generator=train_generator, validation_data=validation_generator, epochs=3)
+    model.fit_generator(generator=train_generator, validation_data=validation_generator, epochs=2)
     model.save("test/my_model_v3_lstm.h5")
     return model
 

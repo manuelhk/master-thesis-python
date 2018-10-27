@@ -10,5 +10,7 @@ def split_npy(array_path):
     pass
 
 
-path = "test2/following"
-
+path = "test2/free_cruising"
+videos = glob.glob(path + "/*.npy")
+for video in videos:
+    split_npy(video)
