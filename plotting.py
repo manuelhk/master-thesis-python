@@ -3,7 +3,7 @@ import numpy as np
 import math
 
 
-X = np.arange(-5., 5., 0.01)
+X = np.arange(-5., 5., 0.1)
 Y_LABEL = "$\\varphi(x)$"
 X_LABEL = "x"
 FONT_SIZE = 16
@@ -94,8 +94,27 @@ def plot_relu():
     pass
 
 
+def plot_softmax():
+    softmax = []
+    for item in X:
+        softmax.append(np.exp(item) / np.exp(X).sum())
+
+    #fig = plt.figure()
+    plt.plot(X, softmax)
+
+    plt.ylabel(Y_LABEL, fontsize=FONT_SIZE)
+    plt.xlabel(X_LABEL, fontsize=FONT_SIZE)
+    plt.grid(GRID)
+
+    plt.ylim(bottom=-0.01, top=0.11)
+    plt.xlim(left=-5, right=5)
+
+    #fig.savefig("act_relu.png")
+    plt.show()
+    pass
+
+
 #plot_sigmoid()
 #plot_step_fc()
 #plot_tanh()
 #plot_relu()
-
