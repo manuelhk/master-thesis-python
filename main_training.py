@@ -19,7 +19,7 @@ def training():
     train_generator, validation_generator = my_generator.build_data_generators(DIRECTORY, SCENARIOS, PARAMS)
     history = model.fit_generator(generator=train_generator, validation_data=validation_generator, epochs=2)
     model.save(DIRECTORY + "/my_model_v3_lstm.h5")
-    return model
+    return model, history
 
 
-model = training()
+model, h = training()
