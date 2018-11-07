@@ -26,11 +26,14 @@ def video_to_jpges_and_npys(video_path, output_path):
 
 def show_npy(path, number_of_images=3, title="No Title"):
     array = np.load(path)
+    index = 1
     for i in range(0, 15, int(15/number_of_images)):
+        plt.subplot(1, number_of_images, index)
         plt.imshow(array[i])
         plt.xlabel(path + " (" + str(i) + ")")
-        plt.title(title)
-        plt.show()
+        index += 1
+    plt.suptitle(title)
+    plt.show()
     pass
 
 
