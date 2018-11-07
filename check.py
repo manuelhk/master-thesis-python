@@ -3,8 +3,8 @@ import matplotlib.pyplot as plt
 import glob
 
 
-def show_npy(array, number_of_images):
-    # array = np.load(path)
+def show_npy(path, number_of_images):
+    array = np.load(path)
     for i in range(0, 15, int(15/number_of_images)):
         plt.imshow(array[i])
         plt.xlabel(path + " (" + str(i) + ")")
