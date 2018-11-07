@@ -6,7 +6,7 @@ import glob
 def load_image(image_path):
     """ Loads image and returns numpy of image"""
     image = cv2.imread(image_path)
-    image = cv2.resize(image, (150, 150))
+    image = cv2.resize(image, (299, 299))
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     image_np = np.array(image)
     return image_np
