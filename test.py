@@ -1,29 +1,17 @@
-<<<<<<< HEAD
+import my_model
 import my_generator
+import keras
 
 
-DIRECTORY = "output"
-SCENARIOS = ["free_cruising", "following", "overtaking"]
-PARAMS = {'dim': (15, 150, 150),
-          'batch_size': 5,
+DIRECTORY = "training"
+SCENARIOS = ["free_cruising", "following", "catching_up"]
+PARAMS = {'dim': (15, 299, 299),
+          'batch_size': 2,
           'n_classes': SCENARIOS.__len__(),
           'n_channels': 3,
           'shuffle': True}
-=======
-import numpy as np
-import glob
 
 
-def split_npy(array_path):
-    np_array = np.load(array_path)
-    frames, w, h, c = np_array.shape
-    for i in range(frames):
-        np.save(array_path + "_" + str(i) + ".npy", np_array[i])
-    pass
+train_generator, validation_generator = my_generator.build_data_generators(DIRECTORY, SCENARIOS, PARAMS)
 
 
-path = "test2/free_cruising"
-videos = glob.glob(path + "/*.npy")
-for video in videos:
-    split_npy(video)
->>>>>>> 5d5cc450bfac10d0cf7649035f67de51a9751ff6
