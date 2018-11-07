@@ -1,5 +1,6 @@
 import glob
 import random
+import os
 import keras
 import numpy as np
 
@@ -55,23 +56,42 @@ class DataGenerator(keras.utils.Sequence):
 
         # Generate data
         for i, ID in enumerate(list_IDs_temp):
-            # Store sample
             a = np.load(ID)
             data[i, ] = keras.applications.inception_v3.preprocess_input(a)
-            # Store class
             labels[i] = self.labels[ID]
         return data, keras.utils.to_categorical(labels, num_classes=self.n_classes)
 
 
+def get_data_and_labels(directory, scenarios, max_number=2500):
+    """ Accesses directory and creates two dictionaries with filenames .npy. One for labels and the other for data. """
+    paths = []
+    for label in scenarios:
+        p = glob.glob(directory + os.sep + str(label) + os.sep + "*.npy")
+        random.shuffle(p)
+        print(label + ": " + str(p.__len__()))
+        if max_number > p.__len__():
+            max_number = p.__len__()
+        for i in range(max_number):
+            paths.append(p[i])
+    print(str(scenarios.__len__()) + " labels á " + str(max_number) + " data objects")
+    labels_dict = dict()
+    for path in paths:
+        for label in scenarios:
+            if label in path:
+                labels_dict.update({path: scenarios.index(label)})
+    random.shuffle(paths)
+    return paths, labels_dict
+
+
+"""
 def build_data_generators(directory, scenarios, params):
-    data, labels = get_data_and_labels(directory, scenarios)
+    data, labels = get_data_and_labels_old(directory, scenarios)
     train_generator = DataGenerator(data['train'], labels, **params)
     validation_generator = DataGenerator(data['validation'], labels, **params)
     return train_generator, validation_generator
 
 
-def get_data_and_labels(directory, scenarios):
-    """ Accesses directory and creates two dictionaries with filenames .npy. One for labels and the other for data. """
+def get_data_and_labels_old(directory, scenarios):
     paths = glob.glob(directory + "/*/*.npy")
     # paths.sort()
     labels_dict = dict()
@@ -84,9 +104,9 @@ def get_data_and_labels(directory, scenarios):
 
 
 def split_into_training_and_validation(list_of_paths, share_training_data=0.8):
-    """ Splits data into training data and validation data and returns a dictionary with two lists """
     random.shuffle(list_of_paths)
     train_list = list_of_paths[:np.math.floor(len(list_of_paths)*share_training_data)]
     eval_list = list_of_paths[np.math.floor(len(list_of_paths)*share_training_data):]
     data_dict = {"train": train_list, "validation": eval_list}
     return data_dict
+"""

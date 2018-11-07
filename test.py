@@ -1,10 +1,9 @@
-import my_model
 import my_generator
-import keras
+import math
 
 
 DIRECTORY = "training"
-SCENARIOS = ["free_cruising", "following", "catching_up"]
+SCENARIOS = ["lane_change_left", "lane_change_right"]
 PARAMS = {'dim': (15, 299, 299),
           'batch_size': 2,
           'n_classes': SCENARIOS.__len__(),
@@ -12,6 +11,12 @@ PARAMS = {'dim': (15, 299, 299),
           'shuffle': True}
 
 
-train_generator, validation_generator = my_generator.build_data_generators(DIRECTORY, SCENARIOS, PARAMS)
+data_paths, label_dict = my_generator.get_data_and_labels(DIRECTORY, SCENARIOS)
 
+train_list = data_paths[:math.floor(len(data_paths)*0.8)]
+eval_list = data_paths[math.floor(len(data_paths)*0.15):math.floor(len(data_paths)*0.95)]
+test_list =data_paths[:math.floor(len(data_paths)*0.05)]
 
+train_generator = my_generator.DataGenerator(train_list, label_dict, **PARAMS)
+validation_generator = my_generator.DataGenerator(eval_list, label_dict, **PARAMS)
+test_generator = my_generator.DataGenerator(test_list, label_dict, **PARAMS)
