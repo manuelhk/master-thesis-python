@@ -2,16 +2,12 @@ import keras
 
 
 def build_model_inceptionV3_LSTM(no_of_labels):
-    video = keras.Input(shape=(15, 150, 150, 3), name="video")
+    video = keras.Input(shape=(15, 299, 299, 3), name="video")
     cnn = keras.applications.inception_v3.InceptionV3(weights="imagenet", include_top=False, pooling="avg")
+    cnn.trainable = False
     x = keras.layers.TimeDistributed(cnn)(video)
-    x = keras.layers.LSTM(256, return_sequences=True)(x)
-    x = keras.layers.LSTM(256, return_sequences=True)(x)
     x = keras.layers.LSTM(256)(x)
-
-    # x = keras.layers.Flatten()(x)
-    # x = keras.layers.GlobalAveragePooling2D()(x)
-    # x = keras.layers.Dense(1024, activation="relu")(x)
+    x = keras.layers.Dense(128, activation="relu")(x)
     output = keras.layers.Dense(units=no_of_labels, activation="softmax", name='predictions')(x)
     model = keras.Model(inputs=video, outputs=output)
     return model

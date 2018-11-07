@@ -79,7 +79,6 @@ def get_data_and_labels(directory, scenarios):
         for label in scenarios:
             if label in path:
                 labels_dict.update({path: scenarios.index(label)})
-    # labels = [0 if "left" in path else 1 for path in paths]
     data_dict = split_into_training_and_validation(paths)
     return data_dict, labels_dict
 
