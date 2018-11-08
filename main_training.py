@@ -26,5 +26,5 @@ train_generator = my_generator.DataGenerator(train_list, label_dict, **PARAMS)
 val_generator = my_generator.DataGenerator(val_list, label_dict, **PARAMS)
 test_generator = my_generator.DataGenerator(test_list, label_dict, **PARAMS)
 
-history = model.fit_generator(generator=train_generator, validation_data=val_generator, epochs=50)
-model.save("output/1107_v3_lstm_fr_fo_ca_lcl_lcr_950_10.h5")
+history = model.fit_generator(generator=train_generator, validation_data=val_generator, epochs=3)
+model.save("output/1108_v3_lstm_fr_fo_ca_lcl_lcr_950_10.h5")
