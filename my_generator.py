@@ -62,7 +62,7 @@ class DataGenerator(keras.utils.Sequence):
         return data, keras.utils.to_categorical(labels, num_classes=self.n_classes)
 
 
-def get_data_and_labels(directory, scenarios, max_number=2500):
+def get_data_and_labels(directory, scenarios, max_number=950):
     """ Accesses directory and creates two dictionaries with filenames .npy. One for labels and the other for data. """
     paths = []
     for label in scenarios:
