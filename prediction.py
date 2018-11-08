@@ -14,27 +14,22 @@ def predict(model, scenario_path):
     return pred_rounded
 
 
-def predict_and_print(model, scenario_paths, lables):
+def predict_and_print(model, scenario_paths, labels):
     for path in scenario_paths:
         path_list = path.split(os.sep)
         pred = predict(model, path)
         print("-----------------------------------")
         print("Actual: " + path_list[-2])
-        for i in range(len(lables)):
-            print(str(pred[i]) + " - " + lables[i])
+        for i in range(len(labels)):
+            print(str(pred[i]) + " - " + labels[i])
     pass
 
 
-def predict_and_show(model, scenario_paths, lables):
+def predict_and_show(model, scenario_paths, labels):
     for path in scenario_paths:
         pred = predict(model, path)
         title = ""
-        for i in range(len(lables)):
-            title = title + "  |  " + str(pred[i]) + " - " + lables[i]
+        for i in range(len(labels)):
+            title = title + "  |  " + str(pred[i]) + " - " + labels[i]
         helper.show_npy(path, title=title)
     pass
-
-
-scs = ["free_cruising", "following", "catching_up"]
-model = keras.models.load_model("data/v3_lstm_fr_fo_ca.h5")
-paths = glob.glob("data/video/*.npy")
