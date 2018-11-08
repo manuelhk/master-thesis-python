@@ -26,7 +26,7 @@ def plot_sigmoid():
     plt.ylim(bottom=-0.1, top=1.1)
     plt.xlim(left=-5, right=5)
 
-    fig.savefig("act_sigmoid.png")
+    fig.savefig("output/act_sigmoid.png")
     plt.show()
     pass
 
@@ -46,7 +46,7 @@ def plot_tanh():
     plt.ylim(bottom=-1.2, top=1.2)
     plt.xlim(left=-5, right=5)
 
-    fig.savefig("act_tanh.png")
+    fig.savefig("output/act_tanh.png")
     plt.show()
     pass
 
@@ -69,7 +69,7 @@ def plot_step_fc():
     plt.ylim(bottom=-0.1, top=1.1)
     plt.xlim(left=-5, right=5)
 
-    fig.savefig("act_step_fc.png")
+    fig.savefig("output/act_step_fc.png")
     plt.show()
     pass
 
@@ -89,7 +89,7 @@ def plot_relu():
     plt.ylim(bottom=-0.5, top=5.5)
     plt.xlim(left=-5, right=5)
 
-    fig.savefig("act_relu.png")
+    fig.savefig("output/act_relu.png")
     plt.show()
     pass
 
@@ -109,7 +109,7 @@ def plot_softmax():
     plt.ylim(bottom=-0.01, top=0.11)
     plt.xlim(left=-5, right=5)
 
-    #fig.savefig("act_relu.png")
+    #fig.savefig("output/act_relu.png")
     plt.show()
     pass
 
