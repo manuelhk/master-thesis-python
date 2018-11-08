@@ -68,12 +68,10 @@ def get_data_and_labels(directory, scenarios, max_number=950):
     for label in scenarios:
         p = glob.glob(directory + os.sep + str(label) + os.sep + "*.npy")
         random.shuffle(p)
-        print(label + ": " + str(p.__len__()))
-        if max_number > p.__len__():
-            max_number = p.__len__()
+        # print(label + ": " + str(p.__len__()))
         for i in range(max_number):
             paths.append(p[i])
-    print(str(scenarios.__len__()) + " labels á " + str(max_number) + " data objects")
+    # print(str(scenarios.__len__()) + " labels á " + str(max_number) + " data objects")
     labels_dict = dict()
     for path in paths:
         for label in scenarios:
@@ -81,6 +79,24 @@ def get_data_and_labels(directory, scenarios, max_number=950):
                 labels_dict.update({path: scenarios.index(label)})
     random.shuffle(paths)
     return paths, labels_dict
+
+
+def get_labels(paths_to_data, scenarios):
+    l = []
+    for path in paths_to_data:
+        for label in scenarios:
+            if label in path:
+                l.append(scenarios.index(label))
+    labels = np.array(l)
+    return labels
+
+
+def get_data(paths_to_data):
+    d = []
+    for path in paths_to_data:
+        d.append(keras.applications.inception_v3.preprocess_input(np.load(path)))
+    labels = np.array(d)
+    return labels
 
 
 """
