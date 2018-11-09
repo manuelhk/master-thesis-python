@@ -43,6 +43,8 @@ def show_npy(path, number_of_images=3, title="No Title"):
 def show_training_history(history_path):
     print("Load history...")
     history_np = np.load(history_path)
+    epochs = len(history_np.item().history.get("acc"))
+    step = epochs/10
     # plot the model's accuracy
     fig = plt.figure()
     plt.plot(history_np.item().history.get("acc"))
@@ -51,9 +53,10 @@ def show_training_history(history_path):
     plt.ylabel("Accuracy")
     plt.xlabel("Epoch")
     plt.legend(["Train", "Validation"])
-    plt.xticks(np.arange(20, dtype="int"), np.arange(20, dtype="int") + 1)
+    plt.xticks(np.arange(start=step, step=step, stop=epochs+1) - 1,
+               np.arange(start=step, step=step, stop=epochs+1, dtype="int"))
     plt.ylim(bottom=0, top=1)
-    plt.xlim(left=0, right=19)
+    plt.xlim(left=0, right=epochs-1)
     plt.show()
     fig.savefig("output/accuracy.png")
     # plot the model's loss
@@ -63,9 +66,10 @@ def show_training_history(history_path):
     plt.title("Model loss")
     plt.ylabel("Loss")
     plt.xlabel("Epoch")
-    plt.xticks(np.arange(20, dtype="int"), np.arange(20, dtype="int") + 1)
+    plt.xticks(np.arange(start=step, step=step, stop=epochs + 1) - 1,
+               np.arange(start=step, step=step, stop=epochs + 1, dtype="int"))
     plt.ylim(bottom=0, top=1.7)
-    plt.xlim(left=0, right=19)
+    plt.xlim(left=0, right=epochs-1)
     plt.legend(["Train", "Validation"])
     plt.show()
     fig.savefig("output/loss.png")
@@ -94,9 +98,18 @@ def show_confusion_matrix(y_true, y_pred, label_names, title="Confusion matrix")
     fig.savefig("output/confusion_matrix.png")
     pass
 
-# l = glob.glob("test/*/*.npy")
-# show_npy('test/FREE_CRUISING/FREE_CRUISING_9.npy', 15)
 
-# video_to_jpges_and_npys("data/video.avi", "data/video/")
+"""
+show_npy('test/FREE_CRUISING/FREE_CRUISING_9.npy', 15)
 
-# show_training_history("/Users/manuel/Dropbox/_data/_models/1108_v3_lstm_fr_fo_ca_lcl_lcr_950_20/history.npy")
+video_to_jpges_and_npys("data/video.avi", "data/video/")
+
+show_training_history("/Users/manuel/Dropbox/_data/_models/1109_v3_lstm/history.npy")
+
+y_true = np.load("/Users/manuel/Dropbox/_data/_models/1109_v3_lstm/labels_test_data.npy")
+y_pred = np.argmax(np.load("/Users/manuel/Dropbox/_data/_models/1109_v3_lstm/predictions_test_data.npy"), 1)
+settings = np.load("/Users/manuel/Dropbox/_data/_models/1109_v3_lstm/settings.npy")
+settings = settings.item()
+label_names = settings["scenarios"]
+helper.show_confusion_matrix(y_true, y_pred, label_names)
+"""
