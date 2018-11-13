@@ -12,7 +12,7 @@ PARAMS = {'dim': (15, 299, 299),
           'n_classes': SCENARIOS.__len__(),
           'n_channels': 3,
           'shuffle': True}
-EPOCHS = 50
+EPOCHS = 20
 
 
 model = my_model.build_model_inceptionV3_LSTM(SCENARIOS.__len__())
