@@ -69,10 +69,7 @@ def get_data_and_labels(directory, scenarios, max_number=950):
     for label in scenarios:
         p = glob.glob(directory + os.sep + str(label) + os.sep + "*.npy")
         random.shuffle(p)
-        print(label + ": " + str(p.__len__()))
-        print(paths_train.__len__())
-        print(paths_val.__len__())
-        print(paths_test.__len__())
+        # print(label + ": " + str(p.__len__()))
         for i in range(max_number):
             if i < int(max_number*0.85):
                 paths_train.append(p[i])
