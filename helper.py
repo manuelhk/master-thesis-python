@@ -3,6 +3,7 @@ from sklearn.metrics import confusion_matrix
 import matplotlib.pyplot as plt
 import cv2
 import itertools
+import os
 
 
 def video_to_jpges_and_npys(video_path, output_path):
@@ -27,6 +28,28 @@ def video_to_jpges_and_npys(video_path, output_path):
     pass
 
 
+def video_to_jpges(video_path, output_path, folder_start=0):
+    vid_cap = cv2.VideoCapture(video_path)
+    count = 0
+    folder = folder_start
+    os.mkdir(output_path + str(folder))
+    success = True
+    while success:
+        success, image = vid_cap.read()
+        if not success:
+            break
+        image = image[:, 106:746, :]
+        cv2.imwrite(output_path + str(folder) + "/frame%d.jpg" % count, image)
+        count += 1
+        if count % 15 == 0:
+            folder += 1
+            count = 0
+            os.mkdir(output_path + str(folder))
+        if folder % 100 == 0 and count == 0:
+            print("folder: " + str(folder))
+    pass
+
+
 def show_npy(path, number_of_images=3, title="No Title"):
     array = np.load(path)
     index = 1
@@ -41,6 +64,7 @@ def show_npy(path, number_of_images=3, title="No Title"):
 
 
 def show_training_history(history_path):
+    """ Plotting accuracy and loss of training and validation data from training history object """
     print("Load history...")
     history_np = np.load(history_path)
     epochs = len(history_np.item().history.get("acc"))
@@ -99,17 +123,15 @@ def show_confusion_matrix(y_true, y_pred, label_names, title="Confusion matrix")
     pass
 
 
-"""
-show_npy('test/FREE_CRUISING/FREE_CRUISING_9.npy', 15)
+# show_npy('test/FREE_CRUISING/FREE_CRUISING_9.npy', 15)
 
-video_to_jpges_and_npys("data/video.avi", "data/video/")
+# video_to_jpges_and_npys("data/video.avi", "data/video/")
 
-show_training_history("/Users/manuel/Dropbox/_data/_models/1109_v3_lstm/history.npy")
+# show_training_history("/Users/manuel/Dropbox/_data/_models/1109_v3_lstm/history.npy")
 
-y_true = np.load("/Users/manuel/Dropbox/_data/_models/1109_v3_lstm/labels_test_data.npy")
-y_pred = np.argmax(np.load("/Users/manuel/Dropbox/_data/_models/1109_v3_lstm/predictions_test_data.npy"), 1)
-settings = np.load("/Users/manuel/Dropbox/_data/_models/1109_v3_lstm/settings.npy")
-settings = settings.item()
-label_names = settings["scenarios"]
-helper.show_confusion_matrix(y_true, y_pred, label_names)
-"""
+# y_true = np.load("/Users/manuel/Dropbox/_data/_models/1109_v3_lstm/labels_test_data.npy")
+# y_pred = np.argmax(np.load("/Users/manuel/Dropbox/_data/_models/1109_v3_lstm/predictions_test_data.npy"), 1)
+# settings = np.load("/Users/manuel/Dropbox/_data/_models/1109_v3_lstm/settings.npy")
+# settings = settings.item()
+# label_names = settings["scenarios"]
+# show_confusion_matrix(y_true, y_pred, label_names)
