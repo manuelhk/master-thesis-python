@@ -49,7 +49,7 @@ class DataGenerator(keras.utils.Sequence):
             np.random.shuffle(self.indexes)
 
     def __data_generation(self, list_IDs_temp):
-        """ Generates data containing batch_size samples """  # X : (n_samples, *dim, n_channels)
+        """ Generates data containing batch_size samples """
         # Initialization
         data = np.empty((self.batch_size, *self.dim, self.n_channels))
         labels = np.empty(self.batch_size, dtype=int)
@@ -63,22 +63,33 @@ class DataGenerator(keras.utils.Sequence):
 
 
 def get_data_and_labels(directory, scenarios, max_number=950):
-    """ Accesses directory and creates two dictionaries with filenames .npy. One for labels and the other for data. """
-    paths = []
+    paths_train = []
+    paths_val = []
+    paths_test = []
     for label in scenarios:
         p = glob.glob(directory + os.sep + str(label) + os.sep + "*.npy")
         random.shuffle(p)
-        # print(label + ": " + str(p.__len__()))
+        print(label + ": " + str(p.__len__()))
+        print(paths_train.__len__())
+        print(paths_val.__len__())
+        print(paths_test.__len__())
         for i in range(max_number):
-            paths.append(p[i])
-    # print(str(scenarios.__len__()) + " labels á " + str(max_number) + " data objects")
+            if i < int(max_number*0.85):
+                paths_train.append(p[i])
+            elif i < int(max_number*0.95):
+                paths_val.append(p[i])
+            else:
+                paths_test.append(p[i])
+    paths_all = paths_test + paths_val + paths_train
     labels_dict = dict()
-    for path in paths:
+    for path in paths_all:
         for label in scenarios:
             if label in path:
                 labels_dict.update({path: scenarios.index(label)})
-    random.shuffle(paths)
-    return paths, labels_dict
+    random.shuffle(paths_train)
+    random.shuffle(paths_val)
+    random.shuffle(paths_test)
+    return paths_train, paths_val, paths_test, labels_dict
 
 
 def get_labels(paths_to_data, scenarios):
