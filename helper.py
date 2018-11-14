@@ -50,7 +50,7 @@ def video_to_jpges(video_path, output_path, folder_start=0):
     pass
 
 
-def show_npy(path, number_of_images=3, title="No Title"):
+def show_npy(path, number_of_images=3):
     array = np.load(path)
     index = 1
     for i in range(0, 15, int(15/number_of_images)):
@@ -102,6 +102,7 @@ def show_training_history(history_path):
 
 
 def show_confusion_matrix(y_true, y_pred, label_names, title="Confusion matrix"):
+    """ Plots the confusion matrix """
     cm = confusion_matrix(y_true, y_pred)
     fig = plt.figure()
     plt.imshow(cm, interpolation='nearest', cmap=plt.cm.Blues)
@@ -125,6 +126,7 @@ def show_confusion_matrix(y_true, y_pred, label_names, title="Confusion matrix")
 
 
 def show_results(model):
+    """ Shows both the confusion matrix and the loss and acc functions """
     show_training_history("/Users/manuel/Dropbox/_data/_models/" + model + "/history.npy")
     y_true = np.load("/Users/manuel/Dropbox/_data/_models/" + model + "/labels_test_data.npy")
     y_pred = np.argmax(np.load("/Users/manuel/Dropbox/_data/_models/" + model + "/predictions_test_data.npy"), 1)

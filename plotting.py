@@ -3,6 +3,9 @@ import numpy as np
 import math
 
 
+# Methods for plotting figures for the thesis
+
+
 X = np.arange(-5., 5., 0.1)
 Y_LABEL = "$\\varphi(x)$"
 X_LABEL = "x"
