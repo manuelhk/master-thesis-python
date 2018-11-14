@@ -1,11 +1,12 @@
 import my_model
 import my_generator
 import keras
-import math
+import random
 import numpy as np
 
 
-DIRECTORY = "input"
+DIRECTORY_SIM = "input"
+DIRECTORY_REAL = "input/real"
 SCENARIOS = ["free_cruising", "following", "catching_up", "lane_change_left", "lane_change_right"]
 PARAMS = {'dim': (15, 299, 299),
           'batch_size': 4,
@@ -19,7 +20,17 @@ model = my_model.build_model_inceptionV3_LSTM(SCENARIOS.__len__())
 model.compile(loss="categorical_crossentropy", optimizer=keras.optimizers.Adam(1e-4), metrics=["accuracy"])
 print(model.summary())
 
-train_list, val_list, test_list, label_dict = my_generator.get_data_and_labels(DIRECTORY, SCENARIOS, max_number=950)
+train_sim, val_sim, test_sim, label_dict = my_generator.get_data_and_labels(DIRECTORY_SIM, SCENARIOS, max_number=950)
+train_real, val_real, test_real, label_real = my_generator.get_data_and_labels(DIRECTORY_REAL, SCENARIOS, max_number=50)
+
+train_list = train_sim + train_real
+val_list = val_sim + val_real
+test_list = test_sim + test_real
+label_dict.update(label_real)
+
+random.shuffle(train_list)
+random.shuffle(val_list)
+random.shuffle(test_list)
 
 print(str(train_list.__len__()) + " objects in training data")
 print(str(val_list.__len__()) + " objects in validation data")
@@ -36,7 +47,9 @@ np.save("output/history.npy", history)
 np.save("output/labels_test_data.npy", my_generator.get_labels(test_list, SCENARIOS))
 np.save("output/predictions_test_data.npy", model.predict(my_generator.get_data(test_list)))
 
-settings = {"scenarios": SCENARIOS, "params": PARAMS, "epochs": EPOCHS,
+settings = {"scenarios": SCENARIOS, "params": PARAMS, "epochs": EPOCHS, "label_dict": label_dict,
+            "train_sim": train_sim, "val_sim": val_sim, "test_sim": test_sim,
+            "train_real": train_real, "val_real": val_real, "test_real": test_real,
             "train_list": train_list, "val_list": val_list, "test_list": test_list,
             "model_compile": ["categorical_crossentropy", "keras.optimizers.Adam(1e-4)", "accuracy"]}
 np.save("output/settings.npy", settings)
