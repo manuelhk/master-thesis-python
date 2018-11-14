@@ -3,6 +3,9 @@ import numpy as np
 import glob
 
 
+SCENARIOS = ["free_cruising", "following", "catching_up", "lane_change_left", "lane_change_right"]
+
+
 def load_image(image_path):
     """ Loads image and returns numpy of image"""
     image = cv2.imread(image_path)
@@ -47,3 +50,16 @@ def prepare_images(label_np, images, scenarios, min_consecutive_scenes, out_path
             no_existing_files += 1
         # print(scenarios[i] + ": " + str(start_indices.__len__()) + " new video arrays")
     pass
+
+
+def jpgs_to_npy(input_dir, output_dir):
+    for label in SCENARIOS:
+        print(label)
+        folder_paths = glob.glob(input_dir + "/" + label + "/*")
+        for i, path in enumerate(folder_paths):
+            a = []
+            for j in range(15):
+                a.append(load_image(path + "/frame" + str(j) + ".jpg"))
+            np.save(output_dir + "/" + label + "/" + label + str(i) + ".npy", np.array(a))
+    pass
+

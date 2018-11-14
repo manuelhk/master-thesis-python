@@ -54,12 +54,13 @@ def show_npy(path, number_of_images=3, title="No Title"):
     array = np.load(path)
     index = 1
     for i in range(0, 15, int(15/number_of_images)):
-        plt.subplot(1, number_of_images, index)
+        # plt.plot(1, number_of_images, index)
         plt.imshow(array[i])
         plt.xlabel(path + " (" + str(i) + ")")
+        plt.show()
         index += 1
-    plt.suptitle(title)
-    plt.show()
+    # plt.suptitle(title)
+    # plt.show()
     pass
 
 
@@ -120,6 +121,17 @@ def show_confusion_matrix(y_true, y_pred, label_names, title="Confusion matrix")
     plt.xlabel('Predicted label')
     plt.show()
     fig.savefig("output/confusion_matrix.png")
+    pass
+
+
+def show_results(model):
+    show_training_history("/Users/manuel/Dropbox/_data/_models/" + model + "/history.npy")
+    y_true = np.load("/Users/manuel/Dropbox/_data/_models/" + model + "/labels_test_data.npy")
+    y_pred = np.argmax(np.load("/Users/manuel/Dropbox/_data/_models/" + model + "/predictions_test_data.npy"), 1)
+    settings = np.load("/Users/manuel/Dropbox/_data/_models/" + model + "/settings.npy")
+    settings = settings.item()
+    label_names = settings["scenarios"]
+    show_confusion_matrix(y_true, y_pred, label_names)
     pass
 
 
