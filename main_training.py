@@ -39,11 +39,31 @@ print(str(test_list.__len__()) + " objects in test data")
 train_generator = my_generator.DataGenerator(train_list, label_dict, **PARAMS)
 val_generator = my_generator.DataGenerator(val_list, label_dict, **PARAMS)
 
-history = model.fit_generator(generator=train_generator, validation_data=val_generator, epochs=EPOCHS)
 
-print("Saving data...")
+""" Create callback for saving model if it improved """
+file_path = "output/model-improvement-{epoch:02d}-{val_acc:.2f}.hdf5"
+checkpoint = keras.callbacks.ModelCheckpoint(file_path, monitor='val_acc', verbose=1, save_best_only=True,
+                                             save_weights_only=False, mode='auto')
+callbacks_list = [checkpoint]
+
+
+""" Saving setting of this model """
+settings = {"scenarios": SCENARIOS, "params": PARAMS, "epochs": EPOCHS, "label_dict": label_dict,
+            "train_sim": train_sim, "val_sim": val_sim, "test_sim": test_sim,
+            "train_real": train_real, "val_real": val_real, "test_real": test_real,
+            "train_list": train_list, "val_list": val_list, "test_list": test_list,
+            "model_compile": ["categorical_crossentropy", "keras.optimizers.Adam(1e-4)", "accuracy"]}
+np.save("output/settings.npy", settings)
+
+
+history = model.fit_generator(generator=train_generator, validation_data=val_generator,
+                              callbacks=callbacks_list, epochs=EPOCHS)
+
+print("Saving model...")
 model.save("output/model.h5")
 np.save("output/history.npy", history)
+
+
 np.save("output/labels_test_data.npy", my_generator.get_labels(test_list, SCENARIOS))
 np.save("output/predictions_test_data.npy", model.predict(my_generator.get_data(test_list)))
 
@@ -52,10 +72,3 @@ np.save("output/predictions_test_data_sim.npy", model.predict(my_generator.get_d
 
 np.save("output/labels_test_data_real.npy", my_generator.get_labels(test_real, SCENARIOS))
 np.save("output/predictions_test_data_real.npy", model.predict(my_generator.get_data(test_real)))
-
-settings = {"scenarios": SCENARIOS, "params": PARAMS, "epochs": EPOCHS, "label_dict": label_dict,
-            "train_sim": train_sim, "val_sim": val_sim, "test_sim": test_sim,
-            "train_real": train_real, "val_real": val_real, "test_real": test_real,
-            "train_list": train_list, "val_list": val_list, "test_list": test_list,
-            "model_compile": ["categorical_crossentropy", "keras.optimizers.Adam(1e-4)", "accuracy"]}
-np.save("output/settings.npy", settings)
