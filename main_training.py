@@ -13,7 +13,7 @@ PARAMS = {'dim': (15, 299, 299),
           'n_classes': SCENARIOS.__len__(),
           'n_channels': 3,
           'shuffle': True}
-EPOCHS = 20
+EPOCHS = 50
 
 
 model = my_model.build_model_inceptionV3_LSTM(SCENARIOS.__len__())
@@ -46,6 +46,12 @@ model.save("output/model.h5")
 np.save("output/history.npy", history)
 np.save("output/labels_test_data.npy", my_generator.get_labels(test_list, SCENARIOS))
 np.save("output/predictions_test_data.npy", model.predict(my_generator.get_data(test_list)))
+
+np.save("output/labels_test_data_sim.npy", my_generator.get_labels(test_sim, SCENARIOS))
+np.save("output/predictions_test_data_sim.npy", model.predict(my_generator.get_data(test_sim)))
+
+np.save("output/labels_test_data_real.npy", my_generator.get_labels(test_real, SCENARIOS))
+np.save("output/predictions_test_data_real.npy", model.predict(my_generator.get_data(test_real)))
 
 settings = {"scenarios": SCENARIOS, "params": PARAMS, "epochs": EPOCHS, "label_dict": label_dict,
             "train_sim": train_sim, "val_sim": val_sim, "test_sim": test_sim,
