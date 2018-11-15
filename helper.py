@@ -140,12 +140,3 @@ def show_results(model):
 # show_npy('test/FREE_CRUISING/FREE_CRUISING_9.npy', 15)
 
 # video_to_jpges_and_npys("data/video.avi", "data/video/")
-
-# show_training_history("/Users/manuel/Dropbox/_data/_models/1109_v3_lstm/history.npy")
-
-# y_true = np.load("/Users/manuel/Dropbox/_data/_models/1109_v3_lstm/labels_test_data.npy")
-# y_pred = np.argmax(np.load("/Users/manuel/Dropbox/_data/_models/1109_v3_lstm/predictions_test_data.npy"), 1)
-# settings = np.load("/Users/manuel/Dropbox/_data/_models/1109_v3_lstm/settings.npy")
-# settings = settings.item()
-# label_names = settings["scenarios"]
-# show_confusion_matrix(y_true, y_pred, label_names)
