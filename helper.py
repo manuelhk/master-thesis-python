@@ -101,9 +101,14 @@ def show_training_history(history_path):
     pass
 
 
-def show_confusion_matrix(y_true, y_pred, label_names, title="Confusion matrix"):
+def show_confusion_matrix(y_true, y_pred, label_names, normalize=False, title="Confusion matrix"):
     """ Plots the confusion matrix """
     cm = confusion_matrix(y_true, y_pred)
+    if normalize:
+        cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+        print("Normalized confusion matrix")
+    else:
+        print('Confusion matrix, without normalization')
     fig = plt.figure()
     plt.imshow(cm, interpolation='nearest', cmap=plt.cm.Blues)
     plt.title(title)
@@ -112,7 +117,7 @@ def show_confusion_matrix(y_true, y_pred, label_names, title="Confusion matrix")
     plt.xticks(tick_marks, label_names, rotation=45)
     plt.yticks(tick_marks, label_names)
     plt.tight_layout()
-    fmt = "d"
+    fmt = '.2f' if normalize else 'd'
     thresh = cm.max() / 2.
     for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
         plt.text(j, i, format(cm[i, j], fmt),
@@ -133,7 +138,7 @@ def show_results(model):
     settings = np.load("/Users/manuel/Dropbox/_data/_models/" + model + "/settings.npy")
     settings = settings.item()
     label_names = settings["scenarios"]
-    show_confusion_matrix(y_true, y_pred, label_names)
+    show_confusion_matrix(y_true, y_pred, label_names, normalize=False, title="Confusion matrix")
     pass
 
 
