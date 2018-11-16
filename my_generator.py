@@ -62,7 +62,7 @@ class DataGenerator(keras.utils.Sequence):
         return data, keras.utils.to_categorical(labels, num_classes=self.n_classes)
 
 
-def get_data_and_labels(directory, scenarios, max_number=950):
+def get_data_and_labels(directory, scenarios, max_number=950, train_share=0.85, val_share=0.95):
     paths_train = []
     paths_val = []
     paths_test = []
@@ -71,9 +71,9 @@ def get_data_and_labels(directory, scenarios, max_number=950):
         random.shuffle(p)
         # print(label + ": " + str(p.__len__()))
         for i in range(max_number):
-            if i < int(max_number*0.85):
+            if i < int(max_number*train_share):
                 paths_train.append(p[i])
-            elif i < int(max_number*0.95):
+            elif i < int(max_number*val_share):
                 paths_val.append(p[i])
             else:
                 paths_test.append(p[i])

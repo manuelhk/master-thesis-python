@@ -13,15 +13,17 @@ PARAMS = {'dim': (15, 299, 299),
           'n_classes': SCENARIOS.__len__(),
           'n_channels': 3,
           'shuffle': True}
-EPOCHS = 50
+EPOCHS = 100
 
 
 model = my_model.build_model_inceptionV3_LSTM(SCENARIOS.__len__())
 model.compile(loss="categorical_crossentropy", optimizer=keras.optimizers.Adam(1e-4), metrics=["accuracy"])
 print(model.summary())
 
-train_sim, val_sim, test_sim, label_dict = my_generator.get_data_and_labels(DIRECTORY_SIM, SCENARIOS, max_number=950)
-train_real, val_real, test_real, label_real = my_generator.get_data_and_labels(DIRECTORY_REAL, SCENARIOS, max_number=50)
+train_sim, val_sim, test_sim, label_dict = my_generator.get_data_and_labels(DIRECTORY_SIM, SCENARIOS, max_number=950,
+                                                                            train_share=0.85, val_share=0.95)
+train_real, val_real, test_real, label_real = my_generator.get_data_and_labels(DIRECTORY_REAL, SCENARIOS, max_number=50,
+                                                                               train_share=0.65, val_share=0.75)
 
 train_list = train_sim + train_real
 val_list = val_sim + val_real
