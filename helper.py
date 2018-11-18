@@ -38,7 +38,7 @@ def video_to_jpges(video_path, output_path, folder_start=0):
         success, image = vid_cap.read()
         if not success:
             break
-        image = image[:, 106:746, :]
+        image = image[:, 239:1679, :]
         cv2.imwrite(output_path + str(folder) + "/frame%d.jpg" % count, image)
         count += 1
         if count % 15 == 0:
@@ -145,3 +145,5 @@ def show_results(model):
 # show_npy('test/FREE_CRUISING/FREE_CRUISING_9.npy', 15)
 
 # video_to_jpges_and_npys("data/video.avi", "data/video/")
+
+# video_to_jpges("/Users/manuel/Dropbox/_data/01_5fps.m4v", "/Users/manuel/Dropbox/_data/01/")
