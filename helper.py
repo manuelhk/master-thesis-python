@@ -126,19 +126,28 @@ def show_confusion_matrix(y_true, y_pred, label_names, normalize=False, title="C
     plt.ylabel('True label')
     plt.xlabel('Predicted label')
     plt.show()
-    fig.savefig("output/confusion_matrix.png")
+    fig.savefig("output/" + title + ".png")
     pass
 
 
-def show_results(model):
+def show_results(model, normalize=False):
     """ Shows both the confusion matrix and the loss and acc functions """
     show_training_history("/Users/manuel/Dropbox/_data/_models/" + model + "/history.npy")
-    y_true = np.load("/Users/manuel/Dropbox/_data/_models/" + model + "/labels_test_data.npy")
-    y_pred = np.argmax(np.load("/Users/manuel/Dropbox/_data/_models/" + model + "/predictions_test_data.npy"), 1)
     settings = np.load("/Users/manuel/Dropbox/_data/_models/" + model + "/settings.npy")
     settings = settings.item()
     label_names = settings["scenarios"]
-    show_confusion_matrix(y_true, y_pred, label_names, normalize=False, title="Confusion matrix")
+    # Confusion matrix synthetic and real data
+    y_true = np.load("/Users/manuel/Dropbox/_data/_models/" + model + "/labels_test_data.npy")
+    y_pred = np.argmax(np.load("/Users/manuel/Dropbox/_data/_models/" + model + "/predictions_test_data.npy"), 1)
+    show_confusion_matrix(y_true, y_pred, label_names, normalize=normalize, title="Confusion matrix (all)")
+    # Confusion matrix synthetic data
+    y_true = np.load("/Users/manuel/Dropbox/_data/_models/" + model + "/labels_test_data_sim.npy")
+    y_pred = np.argmax(np.load("/Users/manuel/Dropbox/_data/_models/" + model + "/predictions_test_data_sim.npy"), 1)
+    show_confusion_matrix(y_true, y_pred, label_names, normalize=normalize, title="Confusion matrix synthetic data")
+    # Confusion matrix real data
+    y_true = np.load("/Users/manuel/Dropbox/_data/_models/" + model + "/labels_test_data_real.npy")
+    y_pred = np.argmax(np.load("/Users/manuel/Dropbox/_data/_models/" + model + "/predictions_test_data_real.npy"), 1)
+    show_confusion_matrix(y_true, y_pred, label_names, normalize=normalize, title="Confusion matrix real data")
     pass
 
 
