@@ -88,7 +88,7 @@ def free_cruising_fn(data, metadata, relevant_vehicles):
 
 
 def approaching_fn(data, metadata, relevant_vehicles, ego_vehicle, index):
-    lower_index = max(index - 50, 0)
+    lower_index = max(index - 15, 0)
     if lower_index == 0:
         ego_v_mean = data[index, metadata.index("Car.v")]
     else:
@@ -204,16 +204,10 @@ def save_video(label_dict, video_path, scenarios):
     for image_path in label_dict:
         frame = cv2.imread(image_path)
         text_scenarios = ""
-        # text_scenes = ""
         for j in range(scenarios.__len__()):
             if label_dict[image_path][j] == 1:
                 text_scenarios = text_scenarios + " " + scenarios[j]
-        #    if label_dict_scenes[image_path][j] == 1:
-        #        text_scenes = text_scenes + " " + scenarios[j]
         cv2.putText(frame, text_scenarios, (10, 10), cv2.FONT_HERSHEY_PLAIN, 0.5, (0, 0, 0))
-        # cv2.putText(frame, text_scenes, (10, 30), cv2.FONT_HERSHEY_PLAIN, 0.5, (0, 0, 0))
-        # cv2.imshow("title", frame)
-        # cv2.waitKey(1)
         out.write(frame)
     out.release()
     cv2.destroyAllWindows()

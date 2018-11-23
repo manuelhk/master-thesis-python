@@ -1,5 +1,5 @@
-import labeling_basic as lb
-import preprocessing as pp
+import my_labeling
+import my_preprocessing
 import glob
 
 
@@ -20,8 +20,8 @@ frames_list.sort()
 assert data_list.__len__() == frames_list.__len__()
 for i in range(data_list.__len__()):
     print("--- " + str(i+1) + "/" + str(data_list.__len__()) + " - " + data_list[i])
-    data, metadata, all_vehicles, images = lb.get_data(data_list[i], frames_list[i])
-    scenarios_labels = lb.label_scenarios(data, metadata, all_vehicles, images, SCENARIOS, MIN_CONSECUTIVE_SCENES)
-    # lb.save_video(label_dict, VIDEO_PATH, SCENARIOS)
-    pp.prepare_images(scenarios_labels, images, SCENARIOS, MIN_CONSECUTIVE_SCENES, OUTPUT_DIR)
+    data, metadata, all_vehicles, images = my_labeling.get_data(data_list[i], frames_list[i])
+    scenarios_labels = my_labeling.label_scenarios(data, metadata, all_vehicles, images, SCENARIOS, MIN_CONSECUTIVE_SCENES)
+    # my_labeling.save_video(label_dict, VIDEO_PATH, SCENARIOS)
+    my_preprocessing.prepare_images(scenarios_labels, images, SCENARIOS, MIN_CONSECUTIVE_SCENES, OUTPUT_DIR)
 print("-----------------------------------------------------")

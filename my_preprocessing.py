@@ -38,7 +38,6 @@ def split_label(label_np, min_consecutive_scenes):
 
 
 def prepare_images(label_np, images, scenarios, min_consecutive_scenes, out_path):
-    # print("Save numpys...")
     no_labels = scenarios.__len__()
     for i in range(no_labels):
         label_dir = out_path + "/" + scenarios[i]
@@ -48,7 +47,6 @@ def prepare_images(label_np, images, scenarios, min_consecutive_scenes, out_path
             video_np = load_video(images[index: index+min_consecutive_scenes])
             np.save(label_dir + "/" + scenarios[i] + "_" + str(no_existing_files), video_np)
             no_existing_files += 1
-        # print(scenarios[i] + ": " + str(start_indices.__len__()) + " new video arrays")
     pass
 
 
