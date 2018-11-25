@@ -5,24 +5,30 @@ import random
 import numpy as np
 
 
-DIRECTORY_SIM = "input"
-DIRECTORY_REAL = "input/real"
+directory_sim = "input"
+directory_real = "input/real"
+
+cnn_name = "xception"
+dropout = True
+epochs = 100
+
+
 SCENARIOS = ["free_cruising", "following", "catching_up", "lane_change_left", "lane_change_right"]
 PARAMS = {'dim': (15, 299, 299),
-          'batch_size': 4,
+          'batch_size': 2,
           'n_classes': SCENARIOS.__len__(),
           'n_channels': 3,
-          'shuffle': True}
-EPOCHS = 10
+          'shuffle': True,
+          'cnn_name': cnn_name}
 
 
-model = my_model.build_model_vgg16_LSTM(SCENARIOS.__len__())
+model = my_model.build_video_model(SCENARIOS.__len__(), cnn_name, dropout)
 model.compile(loss="categorical_crossentropy", optimizer=keras.optimizers.Adam(1e-4), metrics=["accuracy"])
 print(model.summary())
 
-train_sim, val_sim, test_sim, label_dict = my_generator.get_data_and_labels(DIRECTORY_SIM, SCENARIOS, max_number=950,
+train_sim, val_sim, test_sim, label_dict = my_generator.get_data_and_labels(directory_sim, SCENARIOS, max_number=950,
                                                                             train_share=0.85, val_share=0.95)
-train_real, val_real, test_real, label_real = my_generator.get_data_and_labels(DIRECTORY_REAL, SCENARIOS, max_number=67,
+train_real, val_real, test_real, label_real = my_generator.get_data_and_labels(directory_real, SCENARIOS, max_number=67,
                                                                                train_share=0.65, val_share=0.75)
 
 train_list = train_sim + train_real
@@ -51,7 +57,7 @@ callbacks_list = [checkpoint]
 
 
 history = model.fit_generator(generator=train_generator, validation_data=val_generator,
-                              callbacks=callbacks_list, epochs=EPOCHS)
+                              callbacks=callbacks_list, epochs=epochs)
 
 print("Saving model...")
 model.save("output/model.h5")
@@ -59,7 +65,7 @@ np.save("output/history.npy", history)
 
 
 """ Saving setting of this model """
-settings = {"scenarios": SCENARIOS, "params": PARAMS, "epochs": EPOCHS, "label_dict": label_dict,
+settings = {"scenarios": SCENARIOS, "params": PARAMS, "epochs": epochs, "label_dict": label_dict,
             "train_sim": train_sim, "val_sim": val_sim, "test_sim": test_sim,
             "train_real": train_real, "val_real": val_real, "test_real": test_real,
             "train_list": train_list, "val_list": val_list, "test_list": test_list,

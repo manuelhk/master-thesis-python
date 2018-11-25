@@ -14,7 +14,7 @@ import numpy as np
 class DataGenerator(keras.utils.Sequence):
     """ Generates data for Keras """
     def __init__(self, list_IDs, labels, batch_size=20, dim=(299, 299), n_channels=3,
-                 n_classes=3, shuffle=True):
+                 n_classes=3, shuffle=True, cnn_name="inception_v3"):
         """ Initialization """
         self.dim = dim
         self.batch_size = batch_size
@@ -23,6 +23,7 @@ class DataGenerator(keras.utils.Sequence):
         self.n_channels = n_channels
         self.n_classes = n_classes
         self.shuffle = shuffle
+        self.cnn_name = cnn_name
         self.on_epoch_end()
 
     def __len__(self):
@@ -57,9 +58,12 @@ class DataGenerator(keras.utils.Sequence):
         # Generate data
         for i, ID in enumerate(list_IDs_temp):
             a = np.load(ID)
-            # data[i, ] = keras.applications.inception_v3.preprocess_input(a)
-            data[i, ] = keras.applications.vgg16.preprocess_input(a)
-            # data[i, ] = keras.applications.xception.preprocess_input(a)
+            if self.cnn_name == "inception_v3":
+                data[i, ] = keras.applications.inception_v3.preprocess_input(a)
+            elif self.cnn_name == "xception":
+                data[i, ] = keras.applications.xception.preprocess_input(a)
+            else:
+                print("ERROR: cnn_name not defined")
             labels[i] = self.labels[ID]
         return data, keras.utils.to_categorical(labels, num_classes=self.n_classes)
 
@@ -101,40 +105,16 @@ def get_labels(paths_to_data, scenarios):
     return labels
 
 
-def get_data(paths_to_data):
+"""
+def get_data(paths_to_data, cnn_name="inception_v3"):
     d = []
     for path in paths_to_data:
-        # d.append(keras.applications.inception_v3.preprocess_input(np.load(path)))
-        d.append(keras.applications.vgg16.preprocess_input(np.load(path)))
-        # d.append(keras.applications.xception.preprocess_input(np.load(path)))
+        if cnn_name == "inception_v3":
+            d.append(keras.applications.inception_v3.preprocess_input(np.load(path)))
+        elif cnn_name == "xception":
+            d.append(keras.applications.xception.preprocess_input(np.load(path)))
+        else:
+            print("ERROR: cnn_name not defined")
     labels = np.array(d)
     return labels
-
-
-"""
-def build_data_generators(directory, scenarios, params):
-    data, labels = get_data_and_labels_old(directory, scenarios)
-    train_generator = DataGenerator(data['train'], labels, **params)
-    validation_generator = DataGenerator(data['validation'], labels, **params)
-    return train_generator, validation_generator
-
-
-def get_data_and_labels_old(directory, scenarios):
-    paths = glob.glob(directory + "/*/*.npy")
-    # paths.sort()
-    labels_dict = dict()
-    for path in paths:
-        for label in scenarios:
-            if label in path:
-                labels_dict.update({path: scenarios.index(label)})
-    data_dict = split_into_training_and_validation(paths)
-    return data_dict, labels_dict
-
-
-def split_into_training_and_validation(list_of_paths, share_training_data=0.8):
-    random.shuffle(list_of_paths)
-    train_list = list_of_paths[:np.math.floor(len(list_of_paths)*share_training_data)]
-    eval_list = list_of_paths[np.math.floor(len(list_of_paths)*share_training_data):]
-    data_dict = {"train": train_list, "validation": eval_list}
-    return data_dict
 """
