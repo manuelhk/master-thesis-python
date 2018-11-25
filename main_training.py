@@ -16,7 +16,7 @@ PARAMS = {'dim': (15, 299, 299),
 EPOCHS = 10
 
 
-model = my_model.build_model_inceptionV3_LSTM_dropout(SCENARIOS.__len__())
+model = my_model.build_model_vgg16_LSTM_dropout(SCENARIOS.__len__())
 model.compile(loss="categorical_crossentropy", optimizer=keras.optimizers.Adam(1e-4), metrics=["accuracy"])
 print(model.summary())
 
@@ -37,6 +37,7 @@ random.shuffle(test_list)
 print(str(train_list.__len__()) + " objects in training data")
 print(str(val_list.__len__()) + " objects in validation data")
 print(str(test_list.__len__()) + " objects in test data")
+print(str(test_real.__len__()) + " objects in test data real")
 
 train_generator = my_generator.DataGenerator(train_list, label_dict, **PARAMS)
 val_generator = my_generator.DataGenerator(val_list, label_dict, **PARAMS)

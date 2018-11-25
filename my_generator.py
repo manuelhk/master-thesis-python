@@ -57,7 +57,8 @@ class DataGenerator(keras.utils.Sequence):
         # Generate data
         for i, ID in enumerate(list_IDs_temp):
             a = np.load(ID)
-            data[i, ] = keras.applications.inception_v3.preprocess_input(a)
+            # data[i, ] = keras.applications.inception_v3.preprocess_input(a)
+            data[i, ] = keras.applications.vgg16.preprocess_input(a)
             labels[i] = self.labels[ID]
         return data, keras.utils.to_categorical(labels, num_classes=self.n_classes)
 
@@ -102,7 +103,8 @@ def get_labels(paths_to_data, scenarios):
 def get_data(paths_to_data):
     d = []
     for path in paths_to_data:
-        d.append(keras.applications.inception_v3.preprocess_input(np.load(path)))
+        # d.append(keras.applications.inception_v3.preprocess_input(np.load(path)))
+        d.append(keras.applications.vgg16.preprocess_input(np.load(path)))
     labels = np.array(d)
     return labels
 
