@@ -16,7 +16,7 @@ PARAMS = {'dim': (15, 299, 299),
 EPOCHS = 10
 
 
-model = my_model.build_model_vgg16_LSTM_dropout(SCENARIOS.__len__())
+model = my_model.build_model_vgg16_LSTM(SCENARIOS.__len__())
 model.compile(loss="categorical_crossentropy", optimizer=keras.optimizers.Adam(1e-4), metrics=["accuracy"])
 print(model.summary())
 
@@ -50,6 +50,14 @@ checkpoint = keras.callbacks.ModelCheckpoint(file_path, monitor='val_acc', verbo
 callbacks_list = [checkpoint]
 
 
+history = model.fit_generator(generator=train_generator, validation_data=val_generator,
+                              callbacks=callbacks_list, epochs=EPOCHS)
+
+print("Saving model...")
+model.save("output/model.h5")
+np.save("output/history.npy", history)
+
+
 """ Saving setting of this model """
 settings = {"scenarios": SCENARIOS, "params": PARAMS, "epochs": EPOCHS, "label_dict": label_dict,
             "train_sim": train_sim, "val_sim": val_sim, "test_sim": test_sim,
@@ -59,19 +67,14 @@ settings = {"scenarios": SCENARIOS, "params": PARAMS, "epochs": EPOCHS, "label_d
 np.save("output/settings.npy", settings)
 
 
-history = model.fit_generator(generator=train_generator, validation_data=val_generator,
-                              callbacks=callbacks_list, epochs=EPOCHS)
-
-print("Saving model...")
-model.save("output/model.h5")
-np.save("output/history.npy", history)
-
-
 np.save("output/labels_test_data.npy", my_generator.get_labels(test_list, SCENARIOS))
-np.save("output/predictions_test_data.npy", model.predict(my_generator.get_data(test_list)))
+test_list_generator = my_generator.DataGenerator(test_list, label_dict, **PARAMS)
+np.save("output/predictions_test_data.npy", model.predict_generator(test_list_generator))
 
 np.save("output/labels_test_data_sim.npy", my_generator.get_labels(test_sim, SCENARIOS))
-np.save("output/predictions_test_data_sim.npy", model.predict(my_generator.get_data(test_sim)))
+test_sim_generator = my_generator.DataGenerator(test_sim, label_dict, **PARAMS)
+np.save("output/predictions_test_data_sim.npy", model.predict_generator(test_sim_generator))
 
 np.save("output/labels_test_data_real.npy", my_generator.get_labels(test_real, SCENARIOS))
-np.save("output/predictions_test_data_real.npy", model.predict(my_generator.get_data(test_real)))
+test_real_generator = my_generator.DataGenerator(test_real, label_dict, **PARAMS)
+np.save("output/predictions_test_data_real.npy", model.predict_generator(test_real_generator))
