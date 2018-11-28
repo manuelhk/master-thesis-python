@@ -104,6 +104,7 @@ def show_training_history(history_path):
 def show_confusion_matrix(y_true, y_pred, label_names, normalize=False, title="Confusion matrix"):
     """ Plots the confusion matrix """
     cm = confusion_matrix(y_true, y_pred)
+    acc = np.round((cm[0, 0] + cm[1, 1] + cm[2, 2] + cm[3, 3] + cm[4, 4]) / np.sum(cm), 4)
     if normalize:
         cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
         print("Normalized confusion matrix")
@@ -126,7 +127,7 @@ def show_confusion_matrix(y_true, y_pred, label_names, normalize=False, title="C
     plt.ylabel('True label')
     plt.xlabel('Predicted label')
     plt.show()
-    fig.savefig("output/" + title + ".png")
+    fig.savefig("output/" + title + " acc " + str(acc) + ".png")
     pass
 
 
