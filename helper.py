@@ -136,10 +136,6 @@ def show_results(model, normalize=False):
     settings = np.load("/Users/manuel/Dropbox/_data/_models/" + model + "/settings.npy")
     settings = settings.item()
     label_names = settings["scenarios"]
-    # Confusion matrix synthetic and real data
-    y_true = np.load("/Users/manuel/Dropbox/_data/_models/" + model + "/labels_test_data.npy")
-    y_pred = np.argmax(np.load("/Users/manuel/Dropbox/_data/_models/" + model + "/predictions_test_data.npy"), 1)
-    show_confusion_matrix(y_true, y_pred, label_names, normalize=normalize, title="Confusion matrix (all)")
     # Confusion matrix synthetic data
     y_true = np.load("/Users/manuel/Dropbox/_data/_models/" + model + "/labels_test_data_sim.npy")
     y_pred = np.argmax(np.load("/Users/manuel/Dropbox/_data/_models/" + model + "/predictions_test_data_sim.npy"), 1)
