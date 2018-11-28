@@ -9,10 +9,10 @@ input_directory_sim = "input"
 input_directory_real = "input/real"
 output_directory = "output"
 
-classification = "video"        # video or image
+classification = "image"        # video or image
 cnn_name = "inception_v3"       # inception_v3 or xception
 dropout = True
-dim = (15, 299, 299)            # for video: (15, 299, 299), for image: (299, 299)
+dim = (299, 299)            # for video: (15, 299, 299), for image: (299, 299)
 epochs = 100
 max_sim_data_per_class = 950
 max_real_data_per_class = 67
@@ -63,13 +63,13 @@ val_generator = my_generator.DataGenerator(val_list, label_dict, **PARAMS)
 
 
 """ Create callback for saving model if it improved """
-# file_path = output_directory + "/model-improvement-{epoch:02d}-{val_acc:.2f}.hdf5"
-# checkpoint = keras.callbacks.ModelCheckpoint(file_path, monitor='val_acc', verbose=1, save_best_only=True,
-#                                              save_weights_only=False, mode='auto')
+file_path = output_directory + "/model-improvement-{epoch:02d}-{val_acc:.2f}.hdf5"
+checkpoint = keras.callbacks.ModelCheckpoint(file_path, monitor='val_acc', verbose=1, save_best_only=True,
+                                             save_weights_only=False, mode='auto')
 early_stopping = keras.callbacks.EarlyStopping(monitor='val_acc', min_delta=0.01, patience=15, verbose=1, mode='auto',
                                                baseline=None, restore_best_weights=False)
 
-callbacks_list = [early_stopping]
+callbacks_list = [checkpoint, early_stopping]
 
 
 history = model.fit_generator(generator=train_generator, validation_data=val_generator,
@@ -98,11 +98,11 @@ np.save(output_directory + "/labels_test_data_real.npy", my_generator.get_labels
 pred_sim = []
 for path in test_sim:
     pred_sim.append(my_generator.get_data(model, path, cnn_name, classification))
-    pred_sim = np.squeeze(np.array(pred_sim))
+pred_sim = np.squeeze(np.array(pred_sim))
 np.save(output_directory + "/predictions_test_data_sim.npy", pred_sim)
 
 pred_real = []
 for path in test_real:
     pred_real.append(my_generator.get_data(model, path, cnn_name, classification))
-    pred_real = np.squeeze(np.array(pred_real))
+pred_real = np.squeeze(np.array(pred_real))
 np.save(output_directory + "/predictions_test_data_real.npy", pred_real)
