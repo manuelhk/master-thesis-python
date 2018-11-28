@@ -5,10 +5,10 @@ def build_video_model(no_of_labels, cnn_name="inception_v3", dropout=True):
     video = keras.Input(shape=(15, 299, 299, 3), name="video")
     if cnn_name == "inception_v3":
         cnn = keras.applications.inception_v3.InceptionV3(weights="imagenet", include_top=False, pooling="avg")
-        print("inception_v3")
+        print("base model: inception_v3")
     elif cnn_name == "xception":
         cnn = keras.applications.xception.Xception(weights="imagenet", include_top=False, pooling="avg")
-        print("xception")
+        print("base model: xception")
     cnn.trainable = False
     x = keras.layers.TimeDistributed(cnn)(video)
     x = keras.layers.LSTM(256)(x)
@@ -24,11 +24,11 @@ def build_image_model(no_of_labels, cnn_name="inception_v3", dropout=True):
     if cnn_name == "inception_v3":
         cnn = keras.applications.inception_v3.InceptionV3(weights="imagenet", include_top=False, pooling="avg",
                                                           input_shape=(299, 299, 3))
-        print("inception_v3")
+        print("base model: inception_v3")
     elif cnn_name == "xception":
         cnn = keras.applications.xception.Xception(weights="imagenet", include_top=False, pooling="avg",
                                                    input_shape=(299, 299, 3))
-        print("xception")
+        print("base model: xception")
     cnn.trainable = False
     x = cnn.output
     # x = keras.layers.Flatten()(x)
