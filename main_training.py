@@ -40,10 +40,10 @@ print(model.summary())
 
 train_sim, val_sim, test_sim, label_dict = my_generator.get_data_and_labels(input_directory_sim, SCENARIOS,
                                                                             max_number=max_sim_data_per_class,
-                                                                            train_share=0.85, val_share=0.95)
+                                                                            train_share=0.70, val_share=0.90)
 train_real, val_real, test_real, label_real = my_generator.get_data_and_labels(input_directory_real, SCENARIOS,
                                                                                max_number=max_real_data_per_class,
-                                                                               train_share=0.65, val_share=0.75)
+                                                                               train_share=0.50, val_share=0.75)
 
 train_list = train_sim + train_real
 val_list = val_sim + val_real
@@ -54,10 +54,9 @@ random.shuffle(train_list)
 random.shuffle(val_list)
 random.shuffle(test_list)
 
-print(str(train_list.__len__()) + " objects in training data")
-print(str(val_list.__len__()) + " objects in validation data")
-print(str(test_list.__len__()) + " objects in test data")
-print(str(test_real.__len__()) + " objects in test data real")
+print("training data (sim/real): " + str(len(train_sim)) + "/" + str(len(train_real)))
+print("validation data (sim/real): " + str(len(val_sim)) + "/" + str(len(val_real)))
+print("test data (sim/real): " + str(len(test_sim)) + "/" + str(len(test_real)))
 
 train_generator = my_generator.DataGenerator(train_list, label_dict, **PARAMS)
 val_generator = my_generator.DataGenerator(val_list, label_dict, **PARAMS)
