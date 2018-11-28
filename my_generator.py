@@ -129,16 +129,18 @@ def get_labels(paths_to_data, scenarios):
     return labels
 
 
-"""
-def get_data(paths_to_data, cnn_name="inception_v3"):
-    d = []
-    for path in paths_to_data:
-        if cnn_name == "inception_v3":
-            d.append(keras.applications.inception_v3.preprocess_input(np.load(path)))
-        elif cnn_name == "xception":
-            d.append(keras.applications.xception.preprocess_input(np.load(path)))
-        else:
-            print("ERROR: cnn_name not defined")
-    labels = np.array(d)
-    return labels
-"""
+def get_data(model, path, cnn_name="inception_v3", classification="video"):
+    input_data = np.load(path)
+    if classification == "video":
+        input_data = np.expand_dims(input_data, 0)
+    if cnn_name == "inception_v3":
+        label = model.predict(keras.applications.inception_v3.preprocess_input(input_data))
+    elif cnn_name == "xception":
+        label = model.predict(keras.applications.xception.preprocess_input(input_data))
+    else:
+        label = False
+        print("ERROR: cnn_name not defined")
+    if classification == "image":
+        label = np.sum(label, 0)
+        label = label / np.sum(label)
+    return label

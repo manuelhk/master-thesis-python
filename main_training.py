@@ -89,23 +89,20 @@ settings = {"scenarios": SCENARIOS, "params": PARAMS, "epochs": epochs, "label_d
 np.save(output_directory + "/settings.npy", settings)
 
 
-params_test = {'dim': dim,
-               'batch_size': 1,
-               'n_classes': SCENARIOS.__len__(),
-               'n_channels': 3,
-               'shuffle': True,
-               'cnn_name': cnn_name,
-               'classification': classification}
-
-
-np.save(output_directory + "/labels_test_data.npy", my_generator.get_labels(test_list, SCENARIOS))
-test_list_generator = my_generator.DataGenerator(test_list, label_dict, **params_test)
-np.save(output_directory + "/predictions_test_data.npy", model.predict_generator(test_list_generator))
-
+""" Saving paths to test (real and sim) data """
 np.save(output_directory + "/labels_test_data_sim.npy", my_generator.get_labels(test_sim, SCENARIOS))
-test_sim_generator = my_generator.DataGenerator(test_sim, label_dict, **params_test)
-np.save(output_directory + "/predictions_test_data_sim.npy", model.predict_generator(test_sim_generator))
-
 np.save(output_directory + "/labels_test_data_real.npy", my_generator.get_labels(test_real, SCENARIOS))
-test_real_generator = my_generator.DataGenerator(test_real, label_dict, **params_test)
-np.save(output_directory + "/predictions_test_data_real.npy", model.predict_generator(test_real_generator))
+
+
+""" Saving predictions of test (real and sim) data """
+pred_sim = []
+for path in test_sim:
+    pred_sim.append(my_generator.get_data(model, path, cnn_name, classification))
+    pred_sim = np.squeeze(np.array(pred_sim))
+np.save(output_directory + "/predictions_test_data_sim.npy", pred_sim)
+
+pred_real = []
+for path in test_real:
+    pred_real.append(my_generator.get_data(model, path, cnn_name, classification))
+    pred_real = np.squeeze(np.array(pred_real))
+np.save(output_directory + "/predictions_test_data_real.npy", pred_real)
