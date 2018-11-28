@@ -93,7 +93,7 @@ def show_training_history(history_path):
     plt.xlabel("Epoch")
     plt.xticks(np.arange(start=step, step=step, stop=epochs + 1) - 1,
                np.arange(start=step, step=step, stop=epochs + 1, dtype="int"))
-    plt.ylim(bottom=0, top=1.7)
+    plt.ylim(bottom=0, top=1)
     plt.xlim(left=0, right=epochs-1)
     plt.legend(["Train", "Validation"])
     plt.show()
