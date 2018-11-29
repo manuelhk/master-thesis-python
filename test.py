@@ -1,29 +1,18 @@
-import my_model
-import numpy as np
-import glob
+
+"""
+best_model = keras.models.load_model("output/model-improvement-12-1.00.hdf5")
 
 
-SCENARIOS = ["free_cruising", "following", "catching_up", "lane_change_left", "lane_change_right"]
+pred_sim = []
+for path in test_sim:
+    pred_sim.append(my_generator.get_data(best_model, path, cnn_name, classification))
+pred_sim = np.squeeze(np.array(pred_sim))
+np.save(output_directory + "/predictions_test_data_sim_best.npy", pred_sim)
 
 
-# model = keras.applications.VGG16()
-# keras.utils.plot_model(model, to_file='model.png')
-
-# model = my_model.build_image_model(5)
-# print(model.summary())
-
-
-def videos_to_images(input_dir, output_dir):
-    for scenario in SCENARIOS:
-        video_paths = glob.glob(input_dir + "/" + scenario + "/*.npy")
-        print(str(len(video_paths)) + " videos of scenario " + scenario)
-        count_video = 0
-        for path in video_paths:
-            video = np.load(path)
-            count_frame = 0
-            for i in range(15):
-                np.save(output_dir + "/" + scenario + "/" + scenario +
-                        "_v" + str(count_video) + "_f" + str(count_frame) + ".npy", video[i])
-                count_frame += 1
-            count_video += 1
-    pass
+pred_real = []
+for path in test_real:
+    pred_real.append(my_generator.get_data(best_model, path, cnn_name, classification))
+pred_real = np.squeeze(np.array(pred_real))
+np.save(output_directory + "/predictions_test_data_real_best.npy", pred_real)
+"""

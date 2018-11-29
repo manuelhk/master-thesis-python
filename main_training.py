@@ -9,10 +9,10 @@ input_directory_sim = "input"
 input_directory_real = "input/real"
 output_directory = "output"
 
-classification = "image"        # video or image
-cnn_name = "inception_v3"       # inception_v3 or xception
-dropout = True
-dim = (299, 299)            # for video: (15, 299, 299), for image: (299, 299)
+classification = "video"        # video or image
+cnn_name = "inception_v3"           # inception_v3 or xception
+dropout = False
+dim = (15, 299, 299)                # for video: (15, 299, 299), for image: (299, 299)
 epochs = 100
 max_sim_data_per_class = 950
 max_real_data_per_class = 67
@@ -66,7 +66,7 @@ val_generator = my_generator.DataGenerator(val_list, label_dict, **PARAMS)
 file_path = output_directory + "/model-improvement-{epoch:02d}-{val_acc:.2f}.hdf5"
 checkpoint = keras.callbacks.ModelCheckpoint(file_path, monitor='val_acc', verbose=1, save_best_only=True,
                                              save_weights_only=False, mode='auto')
-early_stopping = keras.callbacks.EarlyStopping(monitor='val_acc', min_delta=0.01, patience=15, verbose=1, mode='auto',
+early_stopping = keras.callbacks.EarlyStopping(monitor='val_acc', min_delta=0.01, patience=20, verbose=1, mode='auto',
                                                baseline=None, restore_best_weights=False)
 
 callbacks_list = [checkpoint, early_stopping]
