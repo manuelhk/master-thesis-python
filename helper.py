@@ -69,7 +69,10 @@ def show_training_history(history_path):
     print("Load history...")
     history_np = np.load(history_path)
     epochs = len(history_np.item().history.get("acc"))
-    step = epochs/10
+    if epochs > 20:
+        step = epochs / 10
+    else:
+        step = 1
     # plot the model's accuracy
     fig = plt.figure()
     plt.plot(history_np.item().history.get("acc"))
