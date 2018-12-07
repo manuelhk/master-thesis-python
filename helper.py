@@ -6,7 +6,22 @@ import itertools
 import os
 
 
+################################################################################
+################################################################################
+
+# This script contains various methods for preparing training data or
+# visualizing results of trained neural nets and test data
+
+################################################################################
+################################################################################
+
+
 def video_to_jpges_and_npys(video_path, output_path):
+    """
+        This method converts a video into numpy arrays with 15 frames each
+        it is used for preparing real data from a camera in a car into training input for the neural net
+        reshaping should be adapted to input shape -> see below
+    """
     vidcap = cv2.VideoCapture(video_path)
     count = 0
     success = True
@@ -17,7 +32,7 @@ def video_to_jpges_and_npys(video_path, output_path):
             break
         cv2.imwrite(output_path + "frame%d.jpg" % count, image)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-        image = image[:, 106:746, :]
+        image = image[:, 106:746, :]                    # reshaping should be adapted to input shape
         image = cv2.resize(image, (299, 299))
         count += 1
         array = np.array(image)
@@ -28,44 +43,23 @@ def video_to_jpges_and_npys(video_path, output_path):
     pass
 
 
-def video_to_jpges(video_path, output_path, folder_start=0):
-    vid_cap = cv2.VideoCapture(video_path)
-    count = 0
-    folder = folder_start
-    os.mkdir(output_path + str(folder))
-    success = True
-    while success:
-        success, image = vid_cap.read()
-        if not success:
-            break
-        image = image[:, 239:1679, :]
-        cv2.imwrite(output_path + str(folder) + "/frame%d.jpg" % count, image)
-        count += 1
-        if count % 15 == 0:
-            folder += 1
-            count = 0
-            os.mkdir(output_path + str(folder))
-        if folder % 100 == 0 and count == 0:
-            print("folder: " + str(folder))
-    pass
-
-
 def show_npy(path, number_of_images=3):
+    """
+        This method is used to visualize a numpy array containing 15 images
+        the number of frames to be shown can be specified
+    """
     array = np.load(path)
     index = 1
     for i in range(0, 15, int(15/number_of_images)):
-        # plt.plot(1, number_of_images, index)
         plt.imshow(array[i])
         plt.xlabel(path + " (" + str(i) + ")")
         plt.show()
         index += 1
-    # plt.suptitle(title)
-    # plt.show()
     pass
 
 
 def show_training_history(history_path):
-    """ Plotting accuracy and loss of training and validation data from training history object """
+    """ Plotting accuracy and loss of training and validation data from training history object (Keras)"""
     print("Load history...")
     history_np = np.load(history_path)
     epochs = len(history_np.item().history.get("acc"))
@@ -81,13 +75,13 @@ def show_training_history(history_path):
     fig = plt.figure()
     plt.plot(history_np.item().history.get("acc"))
     plt.plot(history_np.item().history.get("val_acc"))
-    plt.title("Model accuracy")
+    # plt.title("Model accuracy")
     plt.ylabel("Accuracy")
     plt.xlabel("Epoch")
     plt.legend(["Train", "Validation"])
     plt.xticks(np.arange(start=step, step=step, stop=epochs+1) - 1,
                np.arange(start=step, step=step, stop=epochs+1, dtype="int"))
-    plt.ylim(bottom=0, top=1)
+    plt.ylim(bottom=0.8, top=1)
     plt.xlim(left=0, right=epochs-1)
     plt.show()
     fig.savefig("output/accuracy.png")
@@ -109,7 +103,7 @@ def show_training_history(history_path):
 
 
 def show_confusion_matrix(y_true, y_pred, label_names, normalize=False, title="Confusion matrix"):
-    """ Plots the confusion matrix """
+    """ Plots a confusion matrix """
     cm = confusion_matrix(y_true, y_pred)
     acc = np.round((cm[0, 0] + cm[1, 1] + cm[2, 2] + cm[3, 3] + cm[4, 4]) / np.sum(cm), 4)
     if normalize:
@@ -139,7 +133,16 @@ def show_confusion_matrix(y_true, y_pred, label_names, normalize=False, title="C
 
 
 def show_results(model, normalize=False):
-    """ Shows both the confusion matrix and the loss and acc functions """
+    """
+    Shows both the confusion matrix and the loss and accuracy functions
+    This function is specified for the authors directory and need to be adapted
+
+    :param model: name of the folder that contains history object, settings object, scenarios array,
+                  labels_test_data_sim array, predictions_test_data_sim array, labels_test_data_real array and
+                  predictions_test_data_real array
+    :param normalize: specifies if confusion matrix should be normalized
+    :return: saves loss, accuracy and cofusion matrix in project directory
+    """
     show_training_history("/Users/manuel/Dropbox/_data/_models/" + model + "/history.npy")
     settings = np.load("/Users/manuel/Dropbox/_data/_models/" + model + "/settings.npy")
     settings = settings.item()
@@ -153,10 +156,3 @@ def show_results(model, normalize=False):
     y_pred = np.argmax(np.load("/Users/manuel/Dropbox/_data/_models/" + model + "/predictions_test_data_real.npy"), 1)
     show_confusion_matrix(y_true, y_pred, label_names, normalize=normalize, title="Confusion matrix real data")
     pass
-
-
-# show_npy('test/FREE_CRUISING/FREE_CRUISING_9.npy', 15)
-
-# video_to_jpges_and_npys("data/video.avi", "data/video/")
-
-# video_to_jpges("/Users/manuel/Dropbox/_data/01_5fps.m4v", "/Users/manuel/Dropbox/_data/01/")
