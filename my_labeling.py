@@ -9,10 +9,10 @@ import my_vehicle
 # This is the main labeling script containing all necessary methods to label scenes
 # (frames) from CarMaker with corresponding signal data
 
-# The general idea is to create a vehicle object for the ego vehicle and all
-# other vehicles for every scene, containing all necessary information from
-# CarMaker such as velocity or distance. Then each scene is labeled by comparing
-# specific values from each vehicle object
+# The general idea is to create a vehicle object (see also script "my_vehicle" for
+# the ego vehicle and all other vehicles for every scene, containing all necessary
+# information from CarMaker such as velocity or distance. Then each scene is labeled
+# by comparing specific values from each vehicle object
 
 ################################################################################
 ################################################################################
@@ -268,7 +268,7 @@ def unknown_fn(labels):
     """
     This method determines if the current scene is "unknown". It is "unknown" if no other scene is determined
 
-    :param labels: array that indicates what scenes are determined in the current timestep (index)
+    :param labels: array that indicates what scenes are determined in the current time step (index)
     :return: integer: 1 if the current scene is "unknown", 0 if it's not
     """
     if np.sum(labels) == 0:
@@ -279,11 +279,11 @@ def unknown_fn(labels):
 def smoothing_fn(scenes, min_consecutive_scenes):
     """
     This method verifies if the minimum number of required consecutive scenes is satisfied and returns an array
-    indicating which timestep belongs to which scenario
+    indicating which time step belongs to which scenario
 
-    :param scenes: array that indicated what scenes are determined at all timesteps
+    :param scenes: array that indicated what scenes are determined at all time steps
     :param min_consecutive_scenes: minimum number of required consecutive scenes to be a scenario
-    :return: array that indicated what scenarios are determined in all timesteps
+    :return: array that indicated what scenarios are determined in all time steps
     """
     rows, columns = scenes.shape
     scenarios = np.zeros((rows, columns))

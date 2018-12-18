@@ -6,7 +6,7 @@ import glob
 ################################################################################
 ################################################################################
 
-# The general purpose of this script is to load images and save them as scenarios in numpy array with the dimension
+# The general purpose of this script is to load images and save them as scenarios in numpy arrays with dimension
 # (15, 299, 299, 3) (number of images, height, width, color channels)
 
 ################################################################################
@@ -26,7 +26,7 @@ def load_image(image_path):
 
 
 def load_video(images):
-    """ Loads images in defined folder (from one video) and returns numpy of video """
+    """ Loads images from defined folder (from one video) and returns numpy of video """
     img_list = []
     for image_path in images:
         image = load_image(image_path)
@@ -36,6 +36,14 @@ def load_video(images):
 
 
 def split_label(label_np, min_consecutive_scenes):
+    """
+    This method calculates the start indices of each individual scenario within the dataset label_np
+    It is used within the method "prepare_images" below
+
+    :param label_np: array that indicates the respective scenarios (0 or 1) in each row
+    :param min_consecutive_scenes: integer that specifies the number of consecutive scenes to be a scenario
+    :return: list of start indices of every scenario within dataset label_np
+    """
     start_indices = []
     rows = label_np.__len__()
     i = 0
@@ -48,6 +56,17 @@ def split_label(label_np, min_consecutive_scenes):
 
 
 def prepare_images(label_np, images, scenarios, min_consecutive_scenes, out_path):
+    """
+    This method uses the array with labeled scenarios, loads all corresponding images, and saves them in a numpy array
+    according to their respective class label
+
+    :param label_np: array that indicates the respective scenarios (0 or 1) in each row
+    :param images: list of paths to all images from a TestRun in CarMaker
+    :param scenarios: list of labels of all scenarios
+    :param min_consecutive_scenes: integer that specifies the number of consecutive scenes to be a scenario
+    :param out_path: string that defines the output directory
+    :return: nothing
+    """
     no_labels = scenarios.__len__()
     for i in range(no_labels):
         label_dir = out_path + "/" + scenarios[i]
@@ -61,6 +80,13 @@ def prepare_images(label_np, images, scenarios, min_consecutive_scenes, out_path
 
 
 def jpgs_to_npy(input_dir, output_dir):
+    """
+    This method can be used to read jpegs from an input directory and save them as numpy arrays in an output directory
+
+    :param input_dir: input directory where all images are saved in their respective class folder
+    :param output_dir: output directory where numpy array will be saved
+    :return: nothing
+    """
     for label in SCENARIOS:
         print(label)
         folder_paths = glob.glob(input_dir + "/" + label + "/*")
