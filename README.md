@@ -1,9 +1,6 @@
-# Master Thesis
+# Master Thesis: Künstliches Lernen: Trainingsdaten aus dem virtuellen Fahrversuch für Szenarienklassifizierung mit Deep Learning Algorithmen
 
-## Künstliches Lernen: Trainingsdaten aus dem virtuellen Fahrversuch für Szenarienklassifizierung mit Deep Learning Algorithmen
-
-(EN: “Artificial Learning“ - Training Data From a Virtual Driving Test for Scenario Classification With Deep Learning 
-Algorithms)
+## EN: “Artificial Learning“ - Training Data From a Virtual Driving Test for Scenario Classification With Deep Learning Algorithms
 
 Dieser Code ist Teil meiner Masterarbeit am Karlsruher Institut für Technologie (KIT) am Institut für Technik der 
 Informationsverarbeitung (ITIV).
@@ -38,6 +35,18 @@ Für die Vorbereitung der Trainingsdaten wird das Skript "main_preparation.py" m
 
 ### Schritt 1: Verzeichnisse vorbereiten
 
+```python
+import glob
+
+INPUT_DIR = "input"
+OUTPUT_DIR = "output"
+
+data_list = glob.glob(INPUT_DIR + "/data/*")
+data_list.sort()
+frames_list = glob.glob(INPUT_DIR + "/frames/*")
+frames_list.sort()
+```
+
 Das Input-Verzeichnis (INPUT_DIR) und das Output-Verzeichning (OUTPUT_DIR) müssen
 definiert werden. Im Input-Verzeichnis müssen die zwei Ordner "data" und "frames" existieren. Im "data"-Ordner müssen 
 alle .dat-Dateien aus CarMaker von jedem einzelnen TestRun mit aufsteigender Nummerierung liegen. Im "frames"-Ordner 
@@ -48,7 +57,11 @@ abgespeichert werden.
 
 ### Schritt 2: Daten eines TestRuns in den Arbeitsspeicher laden
 
+```python
+import my_labeling
+
 data, metadata, all_vehicles, images = my_labeling.get_data(data, frames)
+```
 
 mit folgenden Variablen:
 
