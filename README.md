@@ -11,12 +11,12 @@ Abstract...
 
 ## Übersicht des Codes
 
-Der Code kann grundsätzlich in zwei Teile eingeteilt werden. In einem Teil werden Daten, die mit der Simulationssoftware 
+Der Code kann grundsätzlich in zwei Teile eingeteilt werden. Im ersten Teil werden Daten, die mit der Simulationssoftware 
 CarMaker generiert werden, gelabelt und für das Training mit neuronalen Netzen vorbereitet. Im zweiten Teil werden
 neuronale Netze designed und mit diesen Daten trainiert. Daneben gibt es ein Skript (helper.py) um Trainingsergebnisse
 zu visualisieren.
 
-Die Funktionsweise dieser beiden Teile und das Skript helper.py wird in den folgenden Abschnitten erläutert.
+Die Funktionsweise der beiden Teile wird in den folgenden Abschnitten erläutert.
 
 ## Benötigte Packages und Versionen
 
@@ -28,12 +28,12 @@ matplotlib 3.0.1
 
 keras 2.2.2
 
-## Teil I: Vorbereitung der Trainingsdaten
+## Teil 1: Vorbereitung der Trainingsdaten
 
-Für die Vorbereitung der Trainingsdaten wird das Skript "main_preparation.py" mit Methoden von "my_labeling.py" und 
-"my_preprocessing.py" verwendet. Um das Skript zu verwenden, können die folgende Schritte angewendet werden.
+Für die Vorbereitung der Trainingsdaten wird das Skript "main_preparation.py" mit Methoden aus "my_labeling.py" und 
+"my_preprocessing.py" verwendet. Die Funktionsweise des Skripts wird in den folgenden Schritten erläutert.
 
-### Schritt 1: Verzeichnisse vorbereiten
+### Schritt 1.1: Verzeichnisse vorbereiten
 
 ```python
 import glob
@@ -55,7 +55,7 @@ gleichen aufsteigenden Nummerierung versehen werden, um während des Labelings d
 zuordnen zu können. Die Bilder in den jeweiligen Ordnern müssen ebenfalls aufsteigend nummeriert und im .jpg-Format 
 abgespeichert werden.
 
-### Schritt 2: Daten eines TestRuns in den Arbeitsspeicher laden
+### Schritt 1.2: Daten eines TestRuns in den Arbeitsspeicher laden
 
 ```python
 import my_labeling
@@ -80,7 +80,7 @@ mit folgenden Variablen:
 
 `List: images` - Liste von Pfaden (Strings) zu jedem Bild des TestRuns, aufsteigend geordnet
 
-### Schritt 3: Szenarios labeln
+### Schritt 1.3: Szenarios labeln
 
 ```python
 MIN_CONSECUTIVE_SCENES = 15
@@ -101,7 +101,7 @@ dem Array scenarios_labels wird für jede Szene x markiert (0: False, 1: True) z
 zugeordnet werden kann. Beispielsweise wird die Szene (1, 0, 0, 0, 1, 0, 0, 0) den Szenarien SCENARIOS[0] und 
 SCENARIOS[4] zugeordnet. Eine "1" an der letzten Position bedeutet, dass die Szene unbekannt ist.
 
-### Schritt 4: Szenarios als numpy arrays speichern
+### Schritt 1.4: Szenarios als numpy arrays speichern
 
 ```python
 import my_preprocessing
@@ -114,4 +114,18 @@ my_preprocessing.prepare_images(scenarios_labels, images, SCENARIOS, MIN_CONSECU
 `OUTPUT_DIR` - Im Output-Verzeichnis müssen Unterordner für jede mögliche Szenarioklasse (aus SCENARIOS) erstellt
 werden. Die Methode my_preprocessing.prepare_images(...) speichert dann jedes Szenario als numpy array im jeweiligen 
 Ordner der Klasse.
+
+
+## Teil 2: Neuronale Netze trainieren
+
+Für das Training der neuronalen Netze wird das Skript "main_training.py" mit Methoden aus "my_generator" und 
+"my_model" verwendet. Die Funktionsweise des Skripts wird in den folgenden Schritten erläutert.
+
+### Schritt 2.1: Verzeichnisse vorbereiten
+
+```python
+
+
+```
+
 

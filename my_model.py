@@ -1,7 +1,26 @@
 import keras
 
 
+################################################################################
+################################################################################
+
+# Methods in this script design neural networks based on given parameters.
+# Generally it is differentiated between a model that classifies single images
+# (build_image_model) and a model that classifies a sequence of images (build_video_model)
+
+################################################################################
+################################################################################
+
+
 def build_video_model(no_of_labels, cnn_name="inception_v3", dropout=True):
+    """
+    This method designs a model that classifies a sequence of images
+
+    :param no_of_labels: number of classes to be classified
+    :param cnn_name: name of the cnn to be used (Inception-V3 or Xception)
+    :param dropout: indicated whether or not dropout is used in the second to last layer
+    :return: keras model
+    """
     video = keras.Input(shape=(15, 299, 299, 3), name="video")
     if cnn_name == "inception_v3":
         cnn = keras.applications.inception_v3.InceptionV3(weights="imagenet", include_top=False, pooling="avg")
@@ -21,6 +40,14 @@ def build_video_model(no_of_labels, cnn_name="inception_v3", dropout=True):
 
 
 def build_image_model(no_of_labels, cnn_name="inception_v3", dropout=True):
+    """
+    This method designs a model that classifies single images
+
+    :param no_of_labels: number of classes to be classified
+    :param cnn_name: name of the cnn to be used (Inception-V3 or Xception)
+    :param dropout: indicated whether or not dropout is used in the second to last layer
+    :return: keras model
+    """
     if cnn_name == "inception_v3":
         cnn = keras.applications.inception_v3.InceptionV3(weights="imagenet", include_top=False, pooling="avg",
                                                           input_shape=(299, 299, 3))

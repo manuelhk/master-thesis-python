@@ -4,10 +4,21 @@ import keras
 import numpy as np
 
 
-""" 
-    Source: https://stanford.edu/~shervine/blog/keras-how-to-generate-data-on-the-fly 
-            A detailed example of how to use data generators with Keras
-"""
+################################################################################
+################################################################################
+
+# This script contains the class "DataGenerator" that is used to build an input
+# stream of numpy arrays into a neural network. It is used to handle video data
+# in form of numpy arrays.
+# Other methods in this script are used to access data and labels for training, and
+# to predict labels of test data
+
+# DataGenerator class is based on
+# https://stanford.edu/~shervine/blog/keras-how-to-generate-data-on-the-fly
+# A detailed example of how to use data generators with Keras
+
+################################################################################
+################################################################################
 
 
 class DataGenerator(keras.utils.Sequence):
@@ -93,6 +104,21 @@ class DataGenerator(keras.utils.Sequence):
 
 
 def get_data_and_labels(directory, scenarios, max_number=950, train_share=0.85, val_share=0.95):
+    """
+    This method accesses all data in a directory and returns three lists of paths respectively
+    to all scenarios of the training data set, validation data set and test data set
+
+    :param directory: directory where folders of each scenario class are stored
+    :param scenarios: list with names of scenario classes
+    :param max_number: maximum number of scenarios per class to be used
+    :param train_share: share of scenarios that are used for training
+    :param val_share: (val_share - train_share) = share of scenarios that are used for validation during training
+    :return:
+        - list: paths_train: list of paths to scenarios that will be used for training
+        - list: paths_val: list of paths to scenarios that will be used for validation during training
+        - list: paths_test: list of paths to scenarios that will be used for testing after training
+        - dict: labels_dict: dictionary with paths to all scenarios and their respective label (as index)
+    """
     paths_train = []
     paths_val = []
     paths_test = []
@@ -120,6 +146,13 @@ def get_data_and_labels(directory, scenarios, max_number=950, train_share=0.85, 
 
 
 def get_labels(paths_to_data, scenarios):
+    """
+    This method is used to get all labels of the scenarios that are stored in "paths_to_data"
+
+    :param paths_to_data: list of paths to scenarios
+    :param scenarios: list with names of scenario classes
+    :return: list of labels from the scenarios in "paths_to_data"
+    """
     label_list = []
     for path in paths_to_data:
         for label in scenarios:
@@ -129,7 +162,16 @@ def get_labels(paths_to_data, scenarios):
     return labels
 
 
-def get_data(model, path, cnn_name="inception_v3", classification="video"):
+def get_prediction(model, path, cnn_name="inception_v3", classification="video"):
+    """
+    This method is used to get the predicted labels of the scenario that is stored in "path"
+
+    :param model: trained neural network
+    :param path: path to scenario
+    :param cnn_name: type of cnn (Inception-V3 or Xception) that is used in the neural network "model"
+    :param classification: type of classification that is used (based on single images of a sequence of images)
+    :return: label that is predicted by "model"
+    """
     input_data = np.load(path)
     if classification == "video":
         input_data = np.expand_dims(input_data, 0)

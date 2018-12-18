@@ -5,20 +5,33 @@ import random
 import numpy as np
 
 
-input_directory_sim = "input"
-input_directory_real = "input/real"
-output_directory = "output"
+################################################################################
+################################################################################
 
-classification = "video"            # video or image
+# This script is used to design neural networks for video classification and train
+# them with video data (in form of numpy arrays)
+#
+# With this script it is possible to mix synthetic and real input data with different ratios
+
+################################################################################
+################################################################################
+
+
+input_directory_sim = "input"       # directory where all synthetic input data is stored in respective class subfolders
+input_directory_real = "input/real" # directory where all real input data is stored in respective class subfolders
+output_directory = "output"         # directory where the trained model is stored
+
+classification = "video"            # based video or image classification (with or without LSTM-layer)
 cnn_name = "inception_v3"           # inception_v3 or xception
-dropout = False
+dropout = False                     # determines whether or not dropout is applied to the second to last layer
 dim = (15, 299, 299)                # for video: (15, 299, 299), for image: (299, 299)
 epochs = 100
-max_sim_data_per_class = 950
-max_real_data_per_class = 67
+max_sim_data_per_class = 950        # maximum number of synthetic scenarios per class to be used
+max_real_data_per_class = 67        # maximum number of real scenarios per class to be used
 
 
 SCENARIOS = ["free_cruising", "following", "catching_up", "lane_change_left", "lane_change_right"]
+                                    # scenarios that are considered for training
 PARAMS = {'dim': dim,
           'batch_size': 4,
           'n_classes': SCENARIOS.__len__(),
@@ -97,12 +110,12 @@ np.save(output_directory + "/labels_test_data_real.npy", my_generator.get_labels
 """ Saving predictions of test (real and sim) data """
 pred_sim = []
 for path in test_sim:
-    pred_sim.append(my_generator.get_data(model, path, cnn_name, classification))
+    pred_sim.append(my_generator.get_prediction(model, path, cnn_name, classification))
 pred_sim = np.squeeze(np.array(pred_sim))
 np.save(output_directory + "/predictions_test_data_sim.npy", pred_sim)
 
 pred_real = []
 for path in test_real:
-    pred_real.append(my_generator.get_data(model, path, cnn_name, classification))
+    pred_real.append(my_generator.get_prediction(model, path, cnn_name, classification))
 pred_real = np.squeeze(np.array(pred_real))
 np.save(output_directory + "/predictions_test_data_real.npy", pred_real)
