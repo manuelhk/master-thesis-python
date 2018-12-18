@@ -3,6 +3,16 @@ import numpy as np
 import glob
 
 
+################################################################################
+################################################################################
+
+# The general purpose of this script is to load images and save them as scenarios in numpy array with the dimension
+# (15, 299, 299, 3) (number of images, height, width, color channels)
+
+################################################################################
+################################################################################
+
+
 SCENARIOS = ["free_cruising", "following", "catching_up", "lane_change_left", "lane_change_right"]
 
 
@@ -60,4 +70,3 @@ def jpgs_to_npy(input_dir, output_dir):
                 a.append(load_image(path + "/frame" + str(j) + ".jpg"))
             np.save(output_dir + "/" + label + "/" + label + str(i) + ".npy", np.array(a))
     pass
-
