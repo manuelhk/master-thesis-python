@@ -1,4 +1,4 @@
-# Master Thesis: Künstliches Lernen: Trainingsdaten aus dem virtuellen Fahrversuch für Szenarienklassifizierung mit Deep Learning Algorithmen
+# Master Thesis: Künstliches Lernen: Trainingsdaten aus dem virtuellen Fahrversuch für Szenarienklassifizierung mit Deep Learning Algorithmen
 
 ## EN: “Artificial Learning“ - Training Data From a Virtual Driving Test for Scenario Classification With Deep Learning Algorithms
 
@@ -60,12 +60,15 @@ abgespeichert werden.
 ```python
 import my_labeling
 
+data = data_list[0]
+frames = frames_list[0]
+
 data, metadata, all_vehicles, images = my_labeling.get_data(data, frames)
 ```
 
 mit folgenden Variablen:
 
-String: data - Pfad zur .dat-Ergebnisdatei die mit CarMaker generiert wurde
+``String: data`` Pfad zur .dat-Ergebnisdatei die mit CarMaker generiert wurde
 
 String: frames - Pfad zu dem Ordner in dem alle Bilder des dazugehörigen TestRuns mit aufsteigender Numerierung gespeichert sind
 
