@@ -207,6 +207,8 @@ alle Daten für das Training in den Arbeitsspeicher geladen werden können.
 ### Schritt 2.4: Training des neuronalen Netzes
 
 ```python
+import numpy as np
+
 history = model.fit_generator(generator=train_generator, validation_data=val_generator, epochs=epochs)
 
 model.save(output_directory + "/model.h5")
