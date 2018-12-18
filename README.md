@@ -68,29 +68,34 @@ data, metadata, all_vehicles, images = my_labeling.get_data(data, frames)
 
 mit folgenden Variablen:
 
-``String: data`` Pfad zur .dat-Ergebnisdatei die mit CarMaker generiert wurde
+``String: data`` - Pfad zur .dat-Ergebnisdatei die mit CarMaker generiert wurde
 
-String: frames - Pfad zu dem Ordner in dem alle Bilder des dazugehörigen TestRuns mit aufsteigender Numerierung gespeichert sind
+``String: frames`` - Pfad zu dem Ordner in dem alle Bilder des dazugehörigen TestRuns mit aufsteigender Numerierung gespeichert sind
 
-Numpy array: data - .dat-Ergebnisdatei ohne Header
+``Numpy array: data`` - .dat-Ergebnisdatei ohne Header
 
-List: metadata - Liste aller Variablennamen die mit CarMaker generiert wurden in der selben Reihenfolge wie die Daten in "data"
+``List: metadata`` - Liste aller Variablennamen die mit CarMaker generiert wurden in der selben Reihenfolge wie die Daten in "data"
 
-List: all_vehicles - Liste aller Fahrzeugnamen (T0, T1, ...) die in dem TestRun erzeugt wurden
+``List: all_vehicles`` - Liste aller Fahrzeugnamen (T0, T1, ...) die in dem TestRun erzeugt wurden
 
-List: images - Liste von Pfaden (Strings) zu jedem Bild des TestRuns, aufsteigend geordnet
+``List: images`` - Liste von Pfaden (Strings) zu jedem Bild des TestRuns, aufsteigend geordnet
 
 ### Schritt 3: Szenarios labeln
 
+```python
+MIN_CONSECUTIVE_SCENES = 15
+SCENARIOS = ["free_cruising", "approaching", "following", "catching_up", "overtaking", "lane_change_left", "lane_change_right", "unknown"]
+
 scenarios_labels = my_labeling.label_scenarios(data, metadata, all_vehicles, images, SCENARIOS, MIN_CONSECUTIVE_SCENES)
+```
 
-data, metadata, all_vehicles, images - siehe oben
+``data, metadata, all_vehicles, images`` - siehe oben
 
-List: SCENARIOS - Liste (Strings) mit allen Szenarien
+``List: SCENARIOS - Liste`` (Strings) mit allen Szenarien
 
-Integer: MIN_CONSECUTIVE_SCENES - Mindestanzahl von konsekutiven Szenen für ein Szenario (in meiner Arbeit immer 15)
+``Integer: MIN_CONSECUTIVE_SCENES`` - Mindestanzahl von konsekutiven Szenen für ein Szenario (in meiner Arbeit immer 15)
 
-Numpy array: scenarios_labels - Array der Dimension (x, len(SCENARIOS)+1). Dabei beschreibt x die Anzahl der Szenen in 
+Numpy array: scenarios_labels - Array der Dimension (x, len(SCENARIOS)). Dabei beschreibt x die Anzahl der Szenen in 
 dem jeweiligen TestRun und len(SCENARIOS) die Anzahl der Szenarien in der Liste SCENARIOS. In dem Array scenarios_labels 
 wird für jede Szene x markiert (0: False, 1: True) zu welchen Szenarien diese Szene zugeordnet werden kann. 
 Beispielsweise wird die Szene (1, 0, 0, 0, 1, 0, 0, 0) den Szenarien SCENARIOS[0] und SCENARIOS[4] zugeordnet. Eine "1" 
