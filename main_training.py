@@ -79,6 +79,8 @@ val_generator = my_generator.DataGenerator(val_list, label_dict, **PARAMS)
 file_path = output_directory + "/model-improvement-{epoch:02d}-{val_acc:.2f}.hdf5"
 checkpoint = keras.callbacks.ModelCheckpoint(file_path, monitor='val_acc', verbose=1, save_best_only=True,
                                              save_weights_only=False, mode='auto')
+
+""" Create callback for early stopping """
 early_stopping = keras.callbacks.EarlyStopping(monitor='val_acc', min_delta=0.01, patience=20, verbose=1, mode='auto',
                                                baseline=None, restore_best_weights=False)
 

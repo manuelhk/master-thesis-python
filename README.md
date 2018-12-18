@@ -13,8 +13,8 @@ Abstract...
 
 Der Code kann grundsätzlich in zwei Teile eingeteilt werden. Im ersten Teil werden Daten, die mit der Simulationssoftware 
 CarMaker generiert werden, gelabelt und für das Training mit neuronalen Netzen vorbereitet. Im zweiten Teil werden
-neuronale Netze designed und mit diesen Daten trainiert. Daneben gibt es ein Skript (helper.py) um Trainingsergebnisse
-zu visualisieren.
+neuronale Netze designed und mit den vorbereiteten Daten trainiert. Daneben gibt es ein Skript (`helper.py) um 
+Trainingsergebnisse zu visualisieren.
 
 Die Funktionsweise der beiden Teile wird in den folgenden Abschnitten erläutert.
 
@@ -30,8 +30,8 @@ keras 2.2.2
 
 ## Teil 1: Vorbereitung der Trainingsdaten
 
-Für die Vorbereitung der Trainingsdaten wird das Skript "main_preparation.py" mit Methoden aus "my_labeling.py" und 
-"my_preprocessing.py" verwendet. Die Funktionsweise des Skripts wird in den folgenden Schritten erläutert.
+Für die Vorbereitung der Trainingsdaten wird das Skript "main_preparation.py" mit Methoden aus `my_labeling.py` und 
+`my_preprocessing.py` verwendet. Die Funktionsweise des Skripts wird in den folgenden Schritten erläutert.
 
 ### Schritt 1.1: Verzeichnisse vorbereiten
 
@@ -47,13 +47,12 @@ frames_list = glob.glob(INPUT_DIR + "/frames/*")
 frames_list.sort()
 ```
 
-Das Input-Verzeichnis (INPUT_DIR) und das Output-Verzeichnis (OUTPUT_DIR) müssen
-definiert werden. Im Input-Verzeichnis müssen die zwei Ordner "data" und "frames" existieren. Im "data"-Ordner müssen 
-alle .dat-Dateien aus CarMaker von jedem einzelnen TestRun mit aufsteigender Nummerierung liegen. Im "frames"-Ordner 
-müssen die dazugehörigen Bilder von jedem TestRun in einem separaten Ordner abgelegt werden. Diese Ordner müssen mit der 
-gleichen aufsteigenden Nummerierung versehen werden, um während des Labelings die .dat-Dateien den richtigen Bildern 
-zuordnen zu können. Die Bilder in den jeweiligen Ordnern müssen ebenfalls aufsteigend nummeriert und im .jpg-Format 
-abgespeichert werden.
+Im Input-Verzeichnis `INPUT_DIR` befinden sich die zwei Ordner "data" und "frames". Im "data"-Ordner sind 
+alle .dat-Dateien aus CarMaker von jedem einzelnen TestRun mit aufsteigender Nummerierung gespeichert. Im "frames"-Ordner 
+sind die dazugehörigen Bilder von jedem TestRun in einem separaten Ordner gespeichert. Diese Ordner sind mit der 
+gleichen aufsteigenden Nummerierung versehen, um während des Labelns die .dat-Dateien den richtigen Bildern 
+zuordnen zu können. Die Bilder in den jeweiligen Ordnern sind ebenfalls aufsteigend nummeriert und im .jpg-Format 
+abgespeichert.
 
 ### Schritt 1.2: Daten eines TestRuns in den Arbeitsspeicher laden
 
@@ -74,7 +73,7 @@ mit folgenden Variablen:
 
 `Numpy array: data` - .dat-Ergebnisdatei ohne Header
 
-`List: metadata` - Liste aller Variablennamen die mit CarMaker generiert wurden in der selben Reihenfolge wie die Daten in "data"
+`List: metadata` - Liste aller Variablen die mit CarMaker generiert wurden, in derselben Reihenfolge wie die Daten in "data"
 
 `List: all_vehicles` - Liste aller Fahrzeugnamen (T0, T1, ...) die in dem TestRun erzeugt wurden
 
@@ -95,11 +94,11 @@ scenarios_labels = my_labeling.label_scenarios(data, metadata, all_vehicles, ima
 
 `Integer: MIN_CONSECUTIVE_SCENES` - Mindestanzahl von konsekutiven Szenen für ein Szenario (in meiner Arbeit immer 15)
 
-`Numpy array: scenarios_labels` - Array der Dimension (x, len(SCENARIOS)). Dabei beschreibt x die Anzahl der Szenen in 
-dem jeweiligen TestRun und len(SCENARIOS) die Anzahl der unterschiedlichen Szenarienklassen in der Liste SCENARIOS. In 
-dem Array scenarios_labels wird für jede Szene x markiert (0: False, 1: True) zu welchen Szenarien diese Szene 
-zugeordnet werden kann. Beispielsweise wird die Szene (1, 0, 0, 0, 1, 0, 0, 0) den Szenarien SCENARIOS[0] und 
-SCENARIOS[4] zugeordnet. Eine "1" an der letzten Position bedeutet, dass die Szene unbekannt ist.
+`Numpy array: scenarios_labels` - Array der Dimension `(x, len(SCENARIOS))`. Dabei beschreibt x die Anzahl der Szenen in 
+dem jeweiligen TestRun und `len(SCENARIOS)` die Anzahl der unterschiedlichen Szenarienklassen in der Liste `SCENARIOS`. In 
+dem Array `scenarios_labels` wird für jede Szene x markiert (0: False, 1: True) zu welchen Szenarien diese Szene 
+zugeordnet ist. Beispielsweise ist die Szene `(1, 0, 0, 0, 1, 0, 0, 0)` den Szenarien `SCENARIOS[0]` und 
+`SCENARIOS[4]` zugeordnet. Eine "1" an der letzten Position bedeutet, dass die Szene als unbekannt gelabelt wurde.
 
 ### Schritt 1.4: Szenarios als numpy arrays speichern
 
@@ -111,21 +110,90 @@ my_preprocessing.prepare_images(scenarios_labels, images, SCENARIOS, MIN_CONSECU
 
 `scenarios_labels, images, SCENARIOS, MIN_CONSECUTIVE_SCENES` - siehe oben
 
-`OUTPUT_DIR` - Im Output-Verzeichnis müssen Unterordner für jede mögliche Szenarioklasse (aus SCENARIOS) erstellt
-werden. Die Methode my_preprocessing.prepare_images(...) speichert dann jedes Szenario als numpy array im jeweiligen 
-Ordner der Klasse.
+`String: OUTPUT_DIR` - Im Output-Verzeichnis sind Unterordner für jede mögliche Szenarioklasse (aus `SCENARIOS`) vorhanden
+. Die Methode `my_preprocessing.prepare_images(...)` speichert jedes Szenario als numpy array im jeweiligen Ordner der 
+Klasse.
 
 
 ## Teil 2: Neuronale Netze trainieren
 
-Für das Training der neuronalen Netze wird das Skript "main_training.py" mit Methoden aus "my_generator" und 
-"my_model" verwendet. Die Funktionsweise des Skripts wird in den folgenden Schritten erläutert.
+Für das Training der neuronalen Netze wird das Skript `main_training.py` mit Methoden aus `my_generator` und 
+`my_model` verwendet. Die Funktionsweise des Skripts wird in den folgenden Schritten erläutert.
 
 ### Schritt 2.1: Verzeichnisse vorbereiten
 
 ```python
-
-
+input_directory_sim = "input"
+input_directory_real = "input/real"
+output_directory = "output"
 ```
 
+`String: input_directory_sim` - In diesem Verzeichnis sind die synthetischen Inputdaten in Unterordnern für jede 
+Szenarioklasse abgespeichert. Damit hat dieses Verzeichnis die gleiche Struktur wie das Output-Verzeichnis von 
+Schritt 1.4.
 
+`String: input_directory_real` - Dieses Verzeichnis ist gleich strukturiert wie das vorherige Verzeichnis und die 
+realen Input-Daten sind hier abgespeichert.
+
+`String: output_directory` - In diesem Verzeichnis wird das trainierte Modell, die Konfiguration und die Ergebnisse
+ der Testdaten gespeichert.
+
+### Schritt 2.2: Neuronales Netz erstellen und kompilieren
+
+```python
+import my_model
+import keras
+
+classification = "video"
+cnn_name = "inception_v3"
+dropout = True
+
+if classification == "video":
+    model = my_model.build_video_model(SCENARIOS.__len__(), cnn_name, dropout)
+if classification == "image":
+    model = my_model.build_image_model(SCENARIOS.__len__(), cnn_name, dropout)
+
+model.compile(loss="categorical_crossentropy", optimizer=keras.optimizers.Adam(1e-4), metrics=["accuracy"])
+```
+
+Das neuronale Netz kann unterschiedlich konfiguriert werden. Die Klassifizierung kann auf Basis von einzelnen Bildern 
+`classification = "image"` oder auf Basis von Bildsequenzen `classification = "video"` erfolgen. Weiterhin kann zwischen 
+zwei unterschiedlichen CNNs (Inception-V3 und Xception) für die Extraktion von räumlichen Merkmalen unterschieden werden. 
+Zusätzlich kann die vorletzte Schicht mit oder ohne Dropout konfiguriert werden.
+
+### Schritt 2.3: Datensätze für Training, Validierung und Test vorbereiten
+
+```python
+import my_generator
+
+max_sim_data_per_class = 950
+max_real_data_per_class = 67 
+
+SCENARIOS = ["free_cruising", "following", "catching_up", "lane_change_left", "lane_change_right"]
+PARAMS = {'dim': dim,
+          'batch_size': 4,
+          'n_classes': SCENARIOS.__len__(),
+          'n_channels': 3,
+          'shuffle': True,
+          'cnn_name': cnn_name,
+          'classification': classification}
+
+train_sim, val_sim, test_sim, label_dict = my_generator.get_data_and_labels(input_directory_sim, SCENARIOS,
+                                                                            max_number=max_sim_data_per_class,
+                                                                            train_share=0.70, val_share=0.90)
+train_real, val_real, test_real, label_real = my_generator.get_data_and_labels(input_directory_real, SCENARIOS,
+                                                                               max_number=max_real_data_per_class,
+                                                                               train_share=0.50, val_share=0.75)
+
+train_list = train_sim + train_real
+val_list = val_sim + val_real
+label_dict.update(label_real)
+
+random.shuffle(train_list)
+random.shuffle(val_list)
+
+train_generator = my_generator.DataGenerator(train_list, label_dict, **PARAMS)
+val_generator = my_generator.DataGenerator(val_list, label_dict, **PARAMS)
+```
+
+In diesem Schritt werden mit der Methode 
