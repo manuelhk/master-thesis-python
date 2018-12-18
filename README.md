@@ -30,8 +30,9 @@ keras 2.2.2
 
 ## Teil 1: Vorbereitung der Trainingsdaten
 
-Für die Vorbereitung der Trainingsdaten wird das Skript "main_preparation.py" mit Methoden aus `my_labeling.py` und 
-`my_preprocessing.py` verwendet. Die Funktionsweise des Skripts wird in den folgenden Schritten erläutert.
+Für die Vorbereitung der Trainingsdaten wird das Skript `main_preparation.py` mit Methoden aus `my_labeling.py` und 
+`my_preprocessing.py` verwendet. Die Funktionsweise des Skripts wird in den folgenden Schritten erläutert. Der 
+vollständige Code kann im Skript `main_preparation.py` mit Kommentaren gefunden werden.
 
 ### Schritt 1.1: Verzeichnisse vorbereiten
 
@@ -118,7 +119,8 @@ Klasse.
 ## Teil 2: Neuronale Netze trainieren
 
 Für das Training der neuronalen Netze wird das Skript `main_training.py` mit Methoden aus `my_generator` und 
-`my_model` verwendet. Die Funktionsweise des Skripts wird in den folgenden Schritten erläutert.
+`my_model` verwendet. Die Funktionsweise des Skripts wird in den folgenden Schritten erläutert. Der vollständige Code 
+kann im Skript `main_training.py` mit Kommentaren gefunden werden.
 
 ### Schritt 2.1: Verzeichnisse vorbereiten
 
@@ -196,4 +198,41 @@ train_generator = my_generator.DataGenerator(train_list, label_dict, **PARAMS)
 val_generator = my_generator.DataGenerator(val_list, label_dict, **PARAMS)
 ```
 
-In diesem Schritt werden mit der Methode 
+In diesem Schritt werden mit der Methode `my_generator.get_data_and_labels(...)`, jeweils für die synthetischen und 
+realen Daten, eine Liste für das Training, die Validierung und den Test erstellt. Dann werden die Listen zusammengefasst 
+und jeweils für das Training und die Validierung während dem Training ein DataGenerator erstellt. Dieser DataGenerator 
+erstellt einen Datenstrom (engl. data stream) zum neuronalen Netz während des Trainings. Dies ist notwendig, weil nicht 
+alle Daten für das Training in den Arbeitsspeicher geladen werden können. 
+
+### Schritt 2.4: Training des neuronalen Netzes
+
+```python
+history = model.fit_generator(generator=train_generator, validation_data=val_generator, epochs=epochs)
+
+model.save(output_directory + "/model.h5")
+np.save(output_directory + "/history.npy", history)
+```
+
+In diesem Schritt wird das neuronale Netz mit den oben generierten Daten trainiert und validiert. Zurückgegeben wird ein 
+`history` Objekt, das u.a. den Fehler und die Genauigkeit nach jeder Epoche speichert. Das trainierte Modell und das 
+`history` Objekt werden im Output-Verzeichnis gespeichert.
+
+### Schritt 2.5: Test des trainierten Netzes
+
+```python
+pred_real = []
+for path in test_real:
+    pred_real.append(my_generator.get_prediction(model, path, cnn_name, classification))
+pred_real = np.squeeze(np.array(pred_real))
+np.save(output_directory + "/predictions_test_data_real.npy", pred_real)
+```
+
+In diesem Schritt werden die realen Testdaten (analog dazu auch die synthetischen Testdaten) von dem trainierten 
+Modell klassifiziert und die Ergebnisse werden im Output-Verzeichnis gespeichert.
+
+
+### Schritt 2.6: Visualisierung mit dem Skript `helper.py`
+
+Die Methoden im Skript `helper.py` können für die Visualisierung der Genauigkeit (engl. accuracy), des Fehlers 
+während dem Training (engl. loss) und der Konfusionsmatrix (engl. confusion matrix) verwendet werden. Für die Verwendung 
+der Methoden müssen ggf. die Pfade in den Methoden angepasst werden.
