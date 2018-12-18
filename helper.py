@@ -3,13 +3,12 @@ from sklearn.metrics import confusion_matrix
 import matplotlib.pyplot as plt
 import cv2
 import itertools
-import os
 
 
 ################################################################################
 ################################################################################
 
-# This script contains various methods for preparing training data or
+# This script contains various methods for preparing training data and
 # visualizing results of trained neural nets and test data
 
 ################################################################################
@@ -59,7 +58,9 @@ def show_npy(path, number_of_images=3):
 
 
 def show_training_history(history_path):
-    """ Plotting accuracy and loss of training and validation data from training history object (Keras)"""
+    """
+        Plotting accuracy and loss of training and validation data from training history object (Keras)
+    """
     print("Load history...")
     history_np = np.load(history_path)
     epochs = len(history_np.item().history.get("acc"))
@@ -81,7 +82,7 @@ def show_training_history(history_path):
     plt.legend(["Train", "Validation"])
     plt.xticks(np.arange(start=step, step=step, stop=epochs+1) - 1,
                np.arange(start=step, step=step, stop=epochs+1, dtype="int"))
-    plt.ylim(bottom=0.8, top=1)
+    plt.ylim(bottom=0, top=1)
     plt.xlim(left=0, right=epochs-1)
     plt.show()
     fig.savefig("output/accuracy.png")

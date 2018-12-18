@@ -9,7 +9,7 @@ input_directory_sim = "input"
 input_directory_real = "input/real"
 output_directory = "output"
 
-classification = "video"        # video or image
+classification = "video"            # video or image
 cnn_name = "inception_v3"           # inception_v3 or xception
 dropout = False
 dim = (15, 299, 299)                # for video: (15, 299, 299), for image: (299, 299)

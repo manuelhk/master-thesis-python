@@ -16,11 +16,10 @@ import glob
 
 MIN_CONSECUTIVE_SCENES = 15    # minimum number of required consecutive scenes to be a scenario
 SCENARIOS = ["free_cruising", "approaching", "following",
-             "catching_up", "overtaking", "lane_change_left", "lane_change_right",
-             "v2_catching_up", "v2_overtaking", "unknown"]
+             "catching_up", "overtaking", "lane_change_left", "lane_change_right", "unknown"]
 
-INPUT_DIR = "input"
-OUTPUT_DIR = "output"
+INPUT_DIR = "input"     # directory where CarMaker data is stored
+OUTPUT_DIR = "output"   # output directory where labeled data should be stored
 
 
 print("------------------ Prepare data... ------------------")
