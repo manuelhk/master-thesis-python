@@ -13,7 +13,7 @@ Ab Stufe 3 des autonomen Fahrens kontrolliert nicht mehr der Fahrer, sondern das
 
 Der Code kann grundsätzlich in zwei Teile eingeteilt werden. Im ersten Teil werden Daten, die mit der Simulationssoftware 
 CarMaker generiert werden, gelabelt und für das Training mit neuronalen Netzen vorbereitet. Im zweiten Teil werden
-neuronale Netze designed und mit den vorbereiteten Daten trainiert. Daneben gibt es ein Skript (`helper.py) um 
+neuronale Netze designed und mit den vorbereiteten Daten trainiert. Daneben gibt es das Skript `helper.py` um 
 Trainingsergebnisse zu visualisieren.
 
 Die Funktionsweise der beiden Teile wird in den folgenden Abschnitten erläutert.
