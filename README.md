@@ -7,7 +7,7 @@ Informationsverarbeitung (ITIV).
 
 ## Abstract der Masterarbeit
 
-Abstract...
+Ab Stufe 3 des autonomen Fahrens kontrolliert nicht mehr der Fahrer, sondern das System die Umgebung in der sich ein Fahrzeug bewegt. Das Resultat ist, dass die Sicherheit von hochautomatisierten Fahrerassistenzsystemen (FAS) in Zukunft in allen potentiellen Szenarien garantiert sein muss. Da viele Szenarien bisher unbekannt sind, stellt diese Absicherung die Automobilindustrie vor große Herausforderungen. In dieser Arbeit wird ein Konzept für die Klassifizierung von Fahrszenarien entwickelt und umgesetzt. Dafür wird ein künstliches neuronales Netz mit 95% synthetischen und 5% realen Videodaten aus fünf Szenarienklassen trainiert. Diese synthetischen Daten werden zuvor mit der Simulationssoftware CarMaker generiert und automatisch gelabelt. Mit diesem Ansatz soll es in Zukunft möglich sein, einen Klassifikator mit allen bisher bekannten Szenarien zu trainieren. Darauf basierend kann dieser Klassifikator bekannte Szenarien erkennen und bisher unbekannte Szenarien identifizieren. Mit der Entwicklung des Ansatzes und einem Proof-of-Concept liefert diese Arbeit einen theoretischen und praktischen Beitrag zur Absicherung von hochautomatisierten FAS.
 
 ## Übersicht des Codes
 
