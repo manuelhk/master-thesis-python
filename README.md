@@ -5,14 +5,14 @@
 Dieser Code ist Teil meiner Masterarbeit am Karlsruher Institut für Technologie (KIT) am Institut für Technik der 
 Informationsverarbeitung (ITIV).
 
-## Abstract der Masterarbeit
+## Zusammenfassung der Masterarbeit
 
-Ab Stufe 3 des autonomen Fahrens kontrolliert nicht mehr der Fahrer, sondern das System die Umgebung in der sich ein Fahrzeug bewegt. Das Resultat ist, dass die Sicherheit von hochautomatisierten Fahrerassistenzsystemen (FAS) in Zukunft in allen potentiellen Szenarien garantiert sein muss. Da viele Szenarien bisher unbekannt sind, stellt diese Absicherung die Automobilindustrie vor große Herausforderungen. In dieser Arbeit wird ein Konzept für die Klassifizierung von Fahrszenarien entwickelt und umgesetzt. Dafür wird ein künstliches neuronales Netz mit 95% synthetischen und 5% realen Videodaten aus fünf Szenarienklassen trainiert. Diese synthetischen Daten werden zuvor mit der Simulationssoftware CarMaker generiert und automatisch gelabelt. Mit diesem Ansatz soll es in Zukunft möglich sein, einen Klassifikator mit allen bisher bekannten Szenarien zu trainieren. Darauf basierend kann dieser Klassifikator bekannte Szenarien erkennen und bisher unbekannte Szenarien identifizieren. Mit der Entwicklung des Ansatzes und einem Proof-of-Concept liefert diese Arbeit einen theoretischen und praktischen Beitrag zur Absicherung von hochautomatisierten FAS.
+Ab Stufe 3 des autonomen Fahrens kontrolliert nicht mehr der Fahrer, sondern das System die Umgebung in der sich ein Fahrzeug bewegt. Das Resultat ist, dass die Sicherheit von hochautomatisierten Fahrerassistenzsystemen (FAS) in Zukunft in allen potentiellen Fahrszenarien garantiert sein muss. Da viele Szenarien bisher unbekannt sind, stellt diese Absicherung die Automobilindustrie vor große Herausforderungen. In dieser Arbeit wird ein Konzept für die Klassifizierung von Fahrszenarien entwickelt und umgesetzt. Dafür wird ein künstliches neuronales Netz mit 95 Prozent synthetischen und 5 Prozent realen Videodaten aus fünf Szenarienklassen trainiert. Diese synthetischen Daten werden zuvor mit der Simulationssoftware CarMaker generiert und automatisch annotiert. Mit diesem Ansatz soll es in Zukunft möglich sein, einen Klassifikator mit allen bisher bekannten Szenarien zu trainieren. Darauf basierend kann dieser Klassifikator bekannte Szenarien erkennen und bisher unbekannte Szenarien identifizieren. Mit der Entwicklung des Ansatzes und einem Proof-of-Concept liefert diese Arbeit einen theoretischen und praktischen Beitrag zur Absicherung von hochautomatisierten FAS.
 
 ## Übersicht des Codes
 
 Der Code kann grundsätzlich in zwei Teile eingeteilt werden. Im ersten Teil werden Daten, die mit der Simulationssoftware 
-CarMaker generiert werden, gelabelt und für das Training mit neuronalen Netzen vorbereitet. Im zweiten Teil werden
+CarMaker generiert werden, annotiert und für das Training mit neuronalen Netzen vorbereitet. Im zweiten Teil werden
 neuronale Netze designed und mit den vorbereiteten Daten trainiert. Daneben gibt es das Skript `helper.py` um 
 Trainingsergebnisse zu visualisieren.
 
@@ -51,7 +51,7 @@ frames_list.sort()
 Im Input-Verzeichnis `INPUT_DIR` befinden sich die zwei Ordner "data" und "frames". Im "data"-Ordner sind 
 alle .dat-Dateien aus CarMaker von jedem einzelnen TestRun mit aufsteigender Nummerierung gespeichert. Im "frames"-Ordner 
 sind die dazugehörigen Bilder von jedem TestRun in einem separaten Ordner gespeichert. Diese Ordner sind mit der 
-gleichen aufsteigenden Nummerierung versehen, um während des Labelns die .dat-Dateien den richtigen Bildern 
+gleichen aufsteigenden Nummerierung versehen, um während des Annotierens die .dat-Dateien den richtigen Bildern 
 zuordnen zu können. Die Bilder in den jeweiligen Ordnern sind ebenfalls aufsteigend nummeriert und im .jpg-Format 
 abgespeichert.
 
@@ -74,13 +74,13 @@ mit folgenden Variablen:
 
 `Numpy array: data` - .dat-Ergebnisdatei ohne Header
 
-`List: metadata` - Liste aller Variablen die mit CarMaker generiert wurden, in derselben Reihenfolge wie die Daten in "data"
+`List: metadata` - Liste aller Variablen die mit CarMaker generiert wurden, in derselben Reihenfolge wie die Daten in `data`
 
 `List: all_vehicles` - Liste aller Fahrzeugnamen (T0, T1, ...) die in dem TestRun erzeugt wurden
 
 `List: images` - Liste von Pfaden (Strings) zu jedem Bild des TestRuns, aufsteigend geordnet
 
-### Schritt 1.3: Szenarios labeln
+### Schritt 1.3: Szenarios annotieren
 
 ```python
 MIN_CONSECUTIVE_SCENES = 15
@@ -91,7 +91,7 @@ scenarios_labels = my_labeling.label_scenarios(data, metadata, all_vehicles, ima
 
 `data, metadata, all_vehicles, images` - siehe oben
 
-`List: SCENARIOS - Liste` (Strings) mit allen Szenarien
+`List: SCENARIOS` - Liste (Strings) mit allen Szenarien
 
 `Integer: MIN_CONSECUTIVE_SCENES` - Mindestanzahl von konsekutiven Szenen für ein Szenario (in meiner Arbeit immer 15)
 
@@ -99,7 +99,7 @@ scenarios_labels = my_labeling.label_scenarios(data, metadata, all_vehicles, ima
 dem jeweiligen TestRun und `len(SCENARIOS)` die Anzahl der unterschiedlichen Szenarienklassen in der Liste `SCENARIOS`. In 
 dem Array `scenarios_labels` wird für jede Szene x markiert (0: False, 1: True) zu welchen Szenarien diese Szene 
 zugeordnet ist. Beispielsweise ist die Szene `(1, 0, 0, 0, 1, 0, 0, 0)` den Szenarien `SCENARIOS[0]` und 
-`SCENARIOS[4]` zugeordnet. Eine "1" an der letzten Position bedeutet, dass die Szene als unbekannt gelabelt wurde.
+`SCENARIOS[4]` zugeordnet. Eine "1" an der letzten Position bedeutet, dass die Szene als unbekannt annotiert wurde.
 
 ### Schritt 1.4: Szenarios als numpy arrays speichern
 
@@ -199,8 +199,8 @@ val_generator = my_generator.DataGenerator(val_list, label_dict, **PARAMS)
 ```
 
 In diesem Schritt werden mit der Methode `my_generator.get_data_and_labels(...)`, jeweils für die synthetischen und 
-realen Daten, eine Liste für das Training, die Validierung und den Test erstellt. Dann werden die Listen zusammengefasst 
-und jeweils für das Training und die Validierung während dem Training ein DataGenerator erstellt. Dieser DataGenerator 
+realen Daten, eine Liste für das Training, die Validierung und den Test erstellt. Im Anschluss werden die Listen der realen und synthetischen Daten zusammengefasst. 
+Für das Training und die Validierung während dem Training wird ein DataGenerator erstellt. Dieser DataGenerator 
 erstellt einen Datenstrom (engl. data stream) zum neuronalen Netz während des Trainings. Dies ist notwendig, weil nicht 
 alle Daten für das Training in den Arbeitsspeicher geladen werden können. 
 
